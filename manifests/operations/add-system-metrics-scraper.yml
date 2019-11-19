@@ -3,6 +3,7 @@
   value:
     name: loggr-system-metric-scraper
     properties:
+      scrape_port: 53035
       system_metrics:
         tls:
           ca_cert: ((system_metrics.ca))
