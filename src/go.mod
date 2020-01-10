@@ -14,7 +14,7 @@ require (
 	github.com/google/go-cmp v0.4.0 // indirect
 	github.com/hashicorp/go-hclog v0.10.1 // indirect
 	github.com/hashicorp/go-immutable-radix v1.1.0 // indirect
-	github.com/hashicorp/go-uuid v1.0.1 // indirect
+	github.com/hashicorp/go-uuid v1.0.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.3 // indirect
 	github.com/hashicorp/raft v1.1.1
 	github.com/kr/pretty v0.2.0 // indirect
