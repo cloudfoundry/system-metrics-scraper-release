@@ -1,8 +1,6 @@
 package app
 
 import (
-	metrics "code.cloudfoundry.org/go-metric-registry"
-	"code.cloudfoundry.org/tlsconfig"
 	"crypto/tls"
 	"fmt"
 	"io/ioutil"
@@ -12,6 +10,10 @@ import (
 	"sync"
 	"time"
 
+	metrics "code.cloudfoundry.org/go-metric-registry"
+	"code.cloudfoundry.org/tlsconfig"
+
+	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/raft"
 )
 
@@ -166,7 +168,7 @@ func (a *Agent) startRaft() func() bool {
 		addr,
 		100,
 		30*time.Second,
-		a.log,
+		hclog.Default(),
 	)
 	if err != nil {
 		a.log.Fatalf("failed to create raft TCP transport: %s", err)
