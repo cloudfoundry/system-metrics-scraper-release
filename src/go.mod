@@ -8,7 +8,7 @@ require (
 	code.cloudfoundry.org/go-loggregator v0.0.0-20190813173818-049b6bf8152a // pinned
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20191209165758-93cfd5e30bb0
 	code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3
-	github.com/armon/go-metrics v0.3.0 // indirect
+	github.com/armon/go-metrics v0.3.1 // indirect
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/hashicorp/go-hclog v0.12.0
@@ -20,7 +20,7 @@ require (
 	github.com/mattn/go-isatty v0.0.12 // indirect
 	github.com/onsi/ginkgo v1.12.0
 	github.com/onsi/gomega v1.9.0
-	github.com/prometheus/client_golang v1.4.0 // indirect
+	github.com/prometheus/client_golang v1.4.1 // indirect
 	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.9.1
 	golang.org/x/net v0.0.0-20200202094626-16171245cfb2 // indirect

@@ -13,7 +13,7 @@ code.cloudfoundry.org/rfc5424
 # code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3
 code.cloudfoundry.org/tlsconfig
 code.cloudfoundry.org/tlsconfig/certtest
-# github.com/armon/go-metrics v0.3.0
+# github.com/armon/go-metrics v0.3.1
 github.com/armon/go-metrics
 # github.com/beorn7/perks v1.0.1
 github.com/beorn7/perks/quantile
@@ -83,7 +83,7 @@ github.com/onsi/gomega/matchers/support/goraph/bipartitegraph
 github.com/onsi/gomega/matchers/support/goraph/edge
 github.com/onsi/gomega/matchers/support/goraph/node
 github.com/onsi/gomega/matchers/support/goraph/util
-# github.com/prometheus/client_golang v1.4.0
+# github.com/prometheus/client_golang v1.4.1
 github.com/prometheus/client_golang/prometheus
 github.com/prometheus/client_golang/prometheus/promhttp
 github.com/prometheus/client_golang/prometheus/internal
