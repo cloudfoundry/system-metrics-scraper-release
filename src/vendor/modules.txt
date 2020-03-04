@@ -13,7 +13,7 @@ code.cloudfoundry.org/rfc5424
 # code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3
 code.cloudfoundry.org/tlsconfig
 code.cloudfoundry.org/tlsconfig/certtest
-# github.com/armon/go-metrics v0.3.2
+# github.com/armon/go-metrics v0.3.3
 github.com/armon/go-metrics
 # github.com/beorn7/perks v1.0.1
 github.com/beorn7/perks/quantile

@@ -8,7 +8,7 @@ require (
 	code.cloudfoundry.org/go-loggregator v0.0.0-20190813173818-049b6bf8152a // pinned
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20191209165758-93cfd5e30bb0
 	code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3
-	github.com/armon/go-metrics v0.3.2 // indirect
+	github.com/armon/go-metrics v0.3.3 // indirect
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang/protobuf v1.3.4 // indirect
