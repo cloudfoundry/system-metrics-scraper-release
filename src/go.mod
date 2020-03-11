@@ -28,7 +28,7 @@ require (
 	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.9.1
 	github.com/prometheus/procfs v0.0.10 // indirect
-	golang.org/x/crypto v0.0.0-20200302210943-78000ba7a073 // indirect
+	golang.org/x/crypto v0.0.0-20200311171314-f7b00557c8c4 // indirect
 	golang.org/x/net v0.0.0-20200301022130-244492dfa37a // indirect
 	golang.org/x/sys v0.0.0-20200302150141-5c8b2ff67527 // indirect
 	golang.org/x/text v0.3.2 // indirect
