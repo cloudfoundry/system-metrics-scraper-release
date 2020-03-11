@@ -1,9 +1,7 @@
 package app_test
 
 import (
-	"code.cloudfoundry.org/tlsconfig"
 	"fmt"
-	"google.golang.org/grpc/credentials"
 	"io/ioutil"
 	"log"
 	"net"
@@ -15,6 +13,9 @@ import (
 	"strconv"
 	"sync"
 	"time"
+
+	"code.cloudfoundry.org/tlsconfig"
+	"google.golang.org/grpc/credentials"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -37,6 +38,7 @@ var _ = Describe("App", func() {
 		leadership       *spyLeadership
 		promServer       *promServer
 		spyMetricsClient *metricshelper.SpyMetricsRegistry
+		spyNATSConn      *spyNATSConn
 
 		metronTestCerts        = testhelper.GenerateCerts("loggregatorCA")
 		systemMetricsTestCerts = testhelper.GenerateCerts("systemMetricsCA")
@@ -86,7 +88,7 @@ var _ = Describe("App", func() {
 		})
 
 		It("scrapes a prometheus endpoint and sends those metrics to a loggregator agent", func() {
-			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient)
+			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient, emptyNATSConn{})
 			go scraper.Run()
 
 			Eventually(spyAgent.Envelopes).Should(And(
@@ -101,7 +103,7 @@ var _ = Describe("App", func() {
 		It("does not scrape when leadership server returns 423", func() {
 			leadership.setReturnCode(http.StatusLocked)
 
-			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient)
+			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient, emptyNATSConn{})
 			go scraper.Run()
 
 			Consistently(spyAgent.Envelopes, 2).Should(HaveLen(0))
@@ -110,7 +112,7 @@ var _ = Describe("App", func() {
 		It("should scrape if leadership server returns non 423", func() {
 			leadership.setReturnCode(http.StatusInternalServerError)
 
-			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient)
+			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient, emptyNATSConn{})
 			go scraper.Run()
 
 			Eventually(func() int {
@@ -120,7 +122,7 @@ var _ = Describe("App", func() {
 
 		It("should scrape if no leadership server endpoint is found", func() {
 			cfg.LeadershipServerAddr = ""
-			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient)
+			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient, emptyNATSConn{})
 			go scraper.Run()
 
 			Eventually(func() int {
@@ -132,7 +134,7 @@ var _ = Describe("App", func() {
 			promServer.setDelay(500 * time.Millisecond)
 			cfg.ScrapeTimeout = 250 * time.Millisecond
 
-			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient)
+			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient, emptyNATSConn{})
 			go scraper.Run()
 
 			Consistently(func() int {
@@ -144,7 +146,7 @@ var _ = Describe("App", func() {
 			promServer.setDelay(500 * time.Millisecond)
 			cfg.ScrapeTimeout = 250 * time.Millisecond
 
-			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient)
+			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient, emptyNATSConn{})
 			go scraper.Run()
 
 			Eventually(func() bool {
@@ -161,7 +163,7 @@ var _ = Describe("App", func() {
 			cfg.ScrapeInterval = 10 * time.Millisecond
 			cfg.ScrapeTimeout = 50 * time.Millisecond
 
-			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient)
+			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient, emptyNATSConn{})
 			go scraper.Run()
 
 			Eventually(func() bool {
@@ -173,7 +175,7 @@ var _ = Describe("App", func() {
 		})
 
 		It("creates a metric for the last total number of attempted scrapes", func() {
-			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient)
+			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient, emptyNATSConn{})
 			go scraper.Run()
 
 			Eventually(func() bool {
@@ -188,7 +190,7 @@ var _ = Describe("App", func() {
 		It("creates a metric for the last total number of failed scrapes", func() {
 			cfg.ScrapePort = 123456 //Bad port -- scrap fails
 
-			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient)
+			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient, emptyNATSConn{})
 			go scraper.Run()
 
 			Eventually(func() bool {
@@ -201,7 +203,7 @@ var _ = Describe("App", func() {
 		})
 
 		It("creates a metric for the last total scrape duration", func() {
-			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient)
+			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient, emptyNATSConn{})
 			go scraper.Run()
 
 			Eventually(func() bool {
@@ -211,8 +213,45 @@ var _ = Describe("App", func() {
 			metric := spyMetricsClient.GetMetric("last_total_scrape_duration", map[string]string{"unit": "ms"})
 			Eventually(metric.Value).Should(BeNumerically(">", 0))
 		})
+
+		It("publishes scrape targets to NATS each scrape", func() {
+			spyNATSConn = newSpyNATSConn()
+
+			scraper = app.NewMetricScraper(cfg, testLogger, spyMetricsClient, spyNATSConn)
+			go scraper.Run()
+
+			Eventually(spyNATSConn.subj).Should(Receive(Equal("metrics.scrape_targets")))
+			Eventually(spyNATSConn.data).Should(Receive(MatchYAML(
+				fmt.Sprintf(`{"targets":["%v"], "source":"default-id", "labels":{}}`,
+					fmt.Sprintf("%v/metrics", promServer.url()),
+				))))
+		})
 	})
 })
+
+type spyNATSConn struct {
+	subj chan string
+	data chan []byte
+}
+
+func (s *spyNATSConn) Publish(subj string, data []byte) error {
+	s.subj <- subj
+	s.data <- data
+	return nil
+}
+
+func newSpyNATSConn() *spyNATSConn {
+	return &spyNATSConn{
+		subj: make(chan string, 100),
+		data: make(chan []byte, 100),
+	}
+}
+
+type emptyNATSConn struct{}
+
+func (emptyNATSConn) Publish(string, []byte) error {
+	return nil
+}
 
 func buildGauge(sourceID, name string, value float64) *loggregator_v2.Envelope {
 	return &loggregator_v2.Envelope{

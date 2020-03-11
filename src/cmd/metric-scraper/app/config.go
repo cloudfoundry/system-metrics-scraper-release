@@ -1,9 +1,10 @@
 package app
 
 import (
-	"code.cloudfoundry.org/system-metrics-scraper/pkg/config"
 	"log"
 	"time"
+
+	"code.cloudfoundry.org/system-metrics-scraper/pkg/config"
 
 	envstruct "code.cloudfoundry.org/go-envstruct"
 )
@@ -34,6 +35,9 @@ type Config struct {
 
 	DNSFile              string `env:"DNS_FILE, report, required"`
 	LeadershipServerAddr string `env:"LEADERSHIP_SERVER_ADDR, report"`
+
+	NatsHosts  []string `env:"NATS_HOSTS, required, report"`
+	NatsCAPath string   `env:"NATS_CA_PATH, required, report"`
 
 	MetricsServer config.MetricsServer
 }

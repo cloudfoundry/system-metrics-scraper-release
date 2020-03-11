@@ -1,12 +1,15 @@
 package app
 
 import (
-	metrics "code.cloudfoundry.org/go-metric-registry"
-	"code.cloudfoundry.org/tlsconfig"
 	"log"
 	"net"
 	"net/http"
 	"time"
+
+	"gopkg.in/yaml.v2"
+
+	metrics "code.cloudfoundry.org/go-metric-registry"
+	"code.cloudfoundry.org/tlsconfig"
 
 	"code.cloudfoundry.org/go-loggregator"
 	"code.cloudfoundry.org/system-metrics-scraper/pkg/scraper"
@@ -19,6 +22,7 @@ type MetricScraper struct {
 	doneChan      chan struct{}
 	stoppedChan   chan struct{}
 	metrics       metricsClient
+	natsConn      natsConn
 }
 
 type metricsClient interface {
@@ -26,7 +30,11 @@ type metricsClient interface {
 	NewGauge(name, helpText string, opts ...metrics.MetricOption) metrics.Gauge
 }
 
-func NewMetricScraper(cfg Config, l *log.Logger, m metricsClient) *MetricScraper {
+type natsConn interface {
+	Publish(string, []byte) error
+}
+
+func NewMetricScraper(cfg Config, l *log.Logger, m metricsClient, n natsConn) *MetricScraper {
 	return &MetricScraper{
 		cfg:           cfg,
 		log:           l,
@@ -34,6 +42,7 @@ func NewMetricScraper(cfg Config, l *log.Logger, m metricsClient) *MetricScraper
 		doneChan:      make(chan struct{}),
 		metrics:       m,
 		stoppedChan:   make(chan struct{}),
+		natsConn:      n,
 	}
 }
 
@@ -81,11 +90,31 @@ func (m *MetricScraper) scrape() {
 		select {
 		case <-t.C:
 			resp, err := leadershipClient.Get(m.cfg.LeadershipServerAddr)
+			// TODO: if err != nil { handle error }
 			if err == nil && resp.StatusCode == http.StatusLocked {
 				continue
 			}
 
-			if err := s.Scrape(); err != nil {
+			for _, t := range m.scrapeTargets() {
+				newT := target{
+					Targets: []string{t.MetricURL},
+					Labels:  t.DefaultTags,
+					Source:  t.ID,
+				}
+
+				bytes, err := yaml.Marshal(newT)
+				if err != nil {
+					m.log.Printf("unable to marshal target(%s): %s\n", t.MetricURL, err)
+					continue
+				}
+
+				err = m.natsConn.Publish(scrapeTargetQueueName, bytes)
+				if err != nil {
+					m.log.Printf("failed to publish targets: %s", err)
+				}
+			}
+
+			if err = s.Scrape(); err != nil {
 				m.log.Printf("failed to scrape: %s", err)
 			}
 
@@ -95,6 +124,14 @@ func (m *MetricScraper) scrape() {
 			return
 		}
 	}
+}
+
+const scrapeTargetQueueName = "metrics.scrape_targets"
+
+type target struct {
+	Targets []string          `json:"targets",yaml:"targets"`
+	Labels  map[string]string `json:"labels",yaml:"labels"`
+	Source  string            `json:"-",yaml:"source"`
 }
 
 func (m *MetricScraper) leadershipClient() *http.Client {

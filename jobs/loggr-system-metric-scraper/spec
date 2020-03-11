@@ -7,6 +7,8 @@ consumes:
   optional: false
 - name: leader-election-agent
   type: leader-election-agent
+- name: nats-tls
+  type: nats-tls
 
 templates:
   bpm.yml.erb: config/bpm.yml
@@ -23,6 +25,7 @@ templates:
   leadership_election_ca.crt.erb: config/certs/leadership_election_ca.crt
   leadership_election.crt.erb: config/certs/leadership_election.crt
   leadership_election.key.erb: config/certs/leadership_election.key
+  nats_ca.crt.erb: config/certs/nats_ca.crt
 
 packages:
 - metric-scraper
