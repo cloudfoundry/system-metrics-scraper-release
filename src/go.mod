@@ -11,7 +11,7 @@ require (
 	github.com/armon/go-metrics v0.3.3 // indirect
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
-	github.com/golang/protobuf v1.3.4 // indirect
+	github.com/golang/protobuf v1.3.5 // indirect
 	github.com/hashicorp/go-hclog v0.12.1
 	github.com/hashicorp/go-immutable-radix v1.1.0 // indirect
 	github.com/hashicorp/go-uuid v1.0.2 // indirect
@@ -32,7 +32,7 @@ require (
 	golang.org/x/net v0.0.0-20200301022130-244492dfa37a // indirect
 	golang.org/x/sys v0.0.0-20200302150141-5c8b2ff67527 // indirect
 	golang.org/x/text v0.3.2 // indirect
-	google.golang.org/genproto v0.0.0-20200312145019-da6875a35672 // indirect
+	google.golang.org/genproto v0.0.0-20200313141609-30c55424f95d // indirect
 	google.golang.org/grpc v1.28.0
 	gopkg.in/yaml.v2 v2.2.8
 )
