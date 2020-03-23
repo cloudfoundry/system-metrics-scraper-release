@@ -28,11 +28,11 @@ require (
 	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.9.1
 	github.com/prometheus/procfs v0.0.11 // indirect
-	golang.org/x/crypto v0.0.0-20200320181102-891825fb96df // indirect
+	golang.org/x/crypto v0.0.0-20200323165209-0ec3e9974c59 // indirect
 	golang.org/x/net v0.0.0-20200320220750-118fecf932d8 // indirect
 	golang.org/x/sys v0.0.0-20200321134203-328b4cd54aae // indirect
 	golang.org/x/text v0.3.2 // indirect
-	google.golang.org/genproto v0.0.0-20200319113533-08878b785e9c // indirect
+	google.golang.org/genproto v0.0.0-20200323114720-3f67cca34472 // indirect
 	google.golang.org/grpc v1.28.0
 	gopkg.in/yaml.v2 v2.2.8
 )
