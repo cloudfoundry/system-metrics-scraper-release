@@ -32,13 +32,6 @@ func main() {
 	)
 
 	natsConn := connectToNATS(cfg, log)
-<<<<<<< HEAD
-	//err := natsConn.Publish("endpoint", []byte(fmt.Sprintf("localhost:%v", cfg.ScrapePort)))
-	//if err != nil {
-	//	panic(err)
-	//}
-=======
->>>>>>> Use TLS to securely publish metric endpoints to NATS
 
 	app.NewMetricScraper(cfg, log, metricClient, natsConn).Run()
 }
