@@ -32,10 +32,13 @@ func main() {
 	)
 
 	natsConn := connectToNATS(cfg, log)
+<<<<<<< HEAD
 	//err := natsConn.Publish("endpoint", []byte(fmt.Sprintf("localhost:%v", cfg.ScrapePort)))
 	//if err != nil {
 	//	panic(err)
 	//}
+=======
+>>>>>>> Use TLS to securely publish metric endpoints to NATS
 
 	app.NewMetricScraper(cfg, log, metricClient, natsConn).Run()
 }
@@ -61,23 +64,25 @@ func connectToNATS(cfg app.Config, logger *log.Logger) *nats.Conn {
 }
 
 func getTLSConfig(cfg app.Config) *tls.Config {
-	if cfg.NatsCAPath != "" {
-		caCert, err := ioutil.ReadFile(cfg.NatsCAPath)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		caCertPool := x509.NewCertPool()
-
-		if !caCertPool.AppendCertsFromPEM(caCert) {
-			log.Fatalf("Failed to load CA certificate from file %s", cfg.NatsCAPath)
-		}
-
-		return &tls.Config{
-			RootCAs: caCertPool,
-		}
+	caCert, err := ioutil.ReadFile(cfg.NatsCAPath)
+	if err != nil {
+		log.Fatal(err)
 	}
-	return nil
+
+	caCertPool := x509.NewCertPool()
+	if !caCertPool.AppendCertsFromPEM(caCert) {
+		log.Fatalf("Failed to load CA certificate from file %s", cfg.NatsCAPath)
+	}
+
+	cert, err := tls.LoadX509KeyPair(cfg.NatsCertPath, cfg.NatsKeyPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return &tls.Config{
+		Certificates: []tls.Certificate{cert},
+		RootCAs:      caCertPool,
+	}
 }
 
 func closedCB(logger *log.Logger) func(conn *nats.Conn) {

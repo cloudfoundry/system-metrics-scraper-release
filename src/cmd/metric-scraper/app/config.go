@@ -36,8 +36,10 @@ type Config struct {
 	DNSFile              string `env:"DNS_FILE, report, required"`
 	LeadershipServerAddr string `env:"LEADERSHIP_SERVER_ADDR, report"`
 
-	NatsHosts  []string `env:"NATS_HOSTS, required, report"`
-	NatsCAPath string   `env:"NATS_CA_PATH, required, report"`
+	NatsHosts    []string `env:"NATS_HOSTS, required, report"`
+	NatsCAPath   string   `env:"NATS_CA_PATH, required, report"`
+	NatsCertPath string   `env:"NATS_CERT_PATH, required, report"`
+	NatsKeyPath  string   `env:"NATS_KEY_PATH, required, report"`
 
 	MetricsServer config.MetricsServer
 }
