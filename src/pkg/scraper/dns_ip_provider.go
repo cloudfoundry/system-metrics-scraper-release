@@ -7,10 +7,9 @@ import (
 	"os"
 )
 
-type record []string
-
-type dns struct {
-	Records []record
+type FileContents struct {
+	RecordKeys  []string        `json:"record_keys"`
+	RecordInfos [][]interface{} `json:"record_infos"`
 }
 
 func NewDNSScrapeTargetProvider(sourceID, dnsFile string, port int) TargetProvider {
@@ -21,19 +20,37 @@ func NewDNSScrapeTargetProvider(sourceID, dnsFile string, port int) TargetProvid
 		}
 		defer file.Close()
 
-		var d dns
+		var d FileContents
 		err = json.NewDecoder(file).Decode(&d)
 		if err != nil {
 			panic(err)
 		}
 
 		var targets []Target
-		for _, r := range d.Records {
-			ip := r[0]
+
+		keyMap := make(map[int]string)
+		for idx, keyName := range d.RecordKeys {
+			if keyName == "instance_group" || keyName == "deployment" || keyName == "ip" || keyName == "id" {
+				keyMap[idx] = keyName
+			}
+		}
+
+		for _, record := range d.RecordInfos {
+			defaultTags := make(map[string]string)
+			var ip string
+			for idx, keyName := range keyMap {
+				recordItem := fmt.Sprintf("%v", record[idx])
+
+				if keyName == "ip" {
+					ip = recordItem
+				}
+				defaultTags[keyName] = recordItem
+			}
 
 			targets = append(targets, Target{
-				ID: sourceID,
-				MetricURL: fmt.Sprintf("https://%s:%d/metrics", ip, port),
+				ID:          sourceID,
+				MetricURL:   fmt.Sprintf("https://%s:%d/metrics", ip, port),
+				DefaultTags: defaultTags,
 			})
 		}
 
