@@ -222,8 +222,8 @@ var _ = Describe("App", func() {
 
 			Eventually(spyNATSConn.subj).Should(Receive(Equal("metrics.scrape_targets")))
 			Eventually(spyNATSConn.data).Should(Receive(MatchYAML(
-				fmt.Sprintf(`{"targets":["%v"], "source":"default-id", "labels":{}}`,
-					fmt.Sprintf("%v/metrics", promServer.url()),
+				fmt.Sprintf(`{"targets":["%v"], "source":"default-id", "labels":{"deployment": "my-deployment-name", "instance_group": "my-instance-group-name", "id": "default-source", "ip":"%v"}}`,
+					fmt.Sprintf("%v/metrics", promServer.url()), promServer.addr(),
 				))))
 		})
 	})
@@ -313,12 +313,42 @@ node_timex_pps_jitter_seconds{source_id="source-2"} 4
 # TYPE node_timex_pps_jitter_total counter
 node_timex_pps_jitter_total 5
 `
-	dnsFileTemplate = `{
-	"records": [
-		[
-			%q
-		]
-	]
+	dnsFileTemplate = `
+{
+  "record_keys": [
+    "id",
+    "num_id",
+    "instance_group",
+    "group_ids",
+    "az",
+    "az_id",
+    "network",
+    "network_id",
+    "deployment",
+    "ip",
+    "domain",
+    "agent_id",
+    "instance_index"
+  ],
+  "record_infos": [
+    [
+      "default-source",
+      "12345",
+      "my-instance-group-name",
+      [
+        "2345"
+      ],
+      "my-az-name",
+      "34",
+      "my-network-name",
+      "45",
+      "my-deployment-name",
+      %q,
+      "bosh",
+      "6615c4f0-9a52-4ba0-b15c-6534b9bd99a9",
+	  1
+    ]
+  ]
 }`
 )
 
@@ -377,6 +407,14 @@ func (s *promServer) stop() {
 
 func (s *promServer) url() string {
 	return s.server.URL
+}
+
+func (s *promServer) addr() string {
+	url, err := url.Parse(s.server.URL)
+	if err != nil {
+		panic(err)
+	}
+	return url.Hostname()
 }
 
 type spyAgent struct {
