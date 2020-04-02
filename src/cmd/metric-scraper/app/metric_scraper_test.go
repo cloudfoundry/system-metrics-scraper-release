@@ -37,6 +37,7 @@ var _ = Describe("App", func() {
 		testLogger       = log.New(GinkgoWriter, "", log.LstdFlags)
 		leadership       *spyLeadership
 		promServer       *promServer
+		promAddr         string
 		spyMetricsClient *metricshelper.SpyMetricsRegistry
 		spyNATSConn      *spyNATSConn
 
@@ -58,7 +59,8 @@ var _ = Describe("App", func() {
 			scrapePort, err := strconv.Atoi(u.Port())
 			Expect(err).ToNot(HaveOccurred())
 
-			dnsFilePath = createDNSFile(u.Hostname())
+			promAddr = u.Hostname()
+			dnsFilePath = createDNSFile(promAddr)
 
 			cfg = app.Config{
 				ClientKeyPath:          metronTestCerts.Key("metron"),
@@ -92,11 +94,11 @@ var _ = Describe("App", func() {
 			go scraper.Run()
 
 			Eventually(spyAgent.Envelopes).Should(And(
-				ContainElement(buildCounter("source-1", "node_timex_pps_calibration_total", 1)),
-				ContainElement(buildCounter("source-1", "node_timex_pps_error_total", 2)),
-				ContainElement(buildGauge("source-1", "node_timex_pps_frequency_hertz", 3)),
-				ContainElement(buildGauge("source-2", "node_timex_pps_jitter_seconds", 4)),
-				ContainElement(buildCounter("default-id", "node_timex_pps_jitter_total", 5)),
+				ContainElement(buildCounter("source-1", "node_timex_pps_calibration_total", promAddr, 1)),
+				ContainElement(buildCounter("source-1", "node_timex_pps_error_total", promAddr, 2)),
+				ContainElement(buildGauge("source-1", "node_timex_pps_frequency_hertz", promAddr, 3)),
+				ContainElement(buildGauge("source-2", "node_timex_pps_jitter_seconds", promAddr, 4)),
+				ContainElement(buildCounter("default-id", "node_timex_pps_jitter_total", promAddr, 5)),
 			))
 		})
 
@@ -223,7 +225,7 @@ var _ = Describe("App", func() {
 			Eventually(spyNATSConn.subj).Should(Receive(Equal("metrics.scrape_targets")))
 			Eventually(spyNATSConn.data).Should(Receive(MatchYAML(
 				fmt.Sprintf(`{"targets":["%v"], "source":"default-id", "labels":{"deployment": "my-deployment-name", "instance_group": "my-instance-group-name", "id": "default-source", "ip":"%v"}}`,
-					fmt.Sprintf("%v/metrics", promServer.url()), promServer.addr(),
+					fmt.Sprintf("%v/metrics", promServer.url()), promAddr,
 				))))
 		})
 	})
@@ -253,8 +255,18 @@ func (emptyNATSConn) Publish(string, []byte) error {
 	return nil
 }
 
-func buildGauge(sourceID, name string, value float64) *loggregator_v2.Envelope {
+func buildTags(sourceID, ip string) map[string]string {
+	return map[string]string{
+		"deployment":     "my-deployment-name",
+		"ip":             ip,
+		"id":             "default-source",
+		"instance_group": "my-instance-group-name",
+	}
+}
+
+func buildGauge(sourceID, name, ip string, value float64) *loggregator_v2.Envelope {
 	return &loggregator_v2.Envelope{
+		Tags:     buildTags(sourceID, ip),
 		SourceId: sourceID,
 		Message: &loggregator_v2.Envelope_Gauge{
 			Gauge: &loggregator_v2.Gauge{
@@ -266,8 +278,9 @@ func buildGauge(sourceID, name string, value float64) *loggregator_v2.Envelope {
 	}
 }
 
-func buildCounter(sourceID, name string, value float64) *loggregator_v2.Envelope {
+func buildCounter(sourceID, name, ip string, value float64) *loggregator_v2.Envelope {
 	return &loggregator_v2.Envelope{
+		Tags:     buildTags(sourceID, ip),
 		SourceId: sourceID,
 		Message: &loggregator_v2.Envelope_Counter{
 			Counter: &loggregator_v2.Counter{
@@ -407,14 +420,6 @@ func (s *promServer) stop() {
 
 func (s *promServer) url() string {
 	return s.server.URL
-}
-
-func (s *promServer) addr() string {
-	url, err := url.Parse(s.server.URL)
-	if err != nil {
-		panic(err)
-	}
-	return url.Hostname()
 }
 
 type spyAgent struct {

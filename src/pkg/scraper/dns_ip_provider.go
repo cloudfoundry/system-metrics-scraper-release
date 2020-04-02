@@ -27,18 +27,18 @@ func NewDNSScrapeTargetProvider(sourceID, dnsFile string, port int) TargetProvid
 		}
 
 		var targets []Target
+		defaultKeys := make(map[int]string)
 
-		keyMap := make(map[int]string)
 		for idx, keyName := range d.RecordKeys {
 			if keyName == "instance_group" || keyName == "deployment" || keyName == "ip" || keyName == "id" {
-				keyMap[idx] = keyName
+				defaultKeys[idx] = keyName
 			}
 		}
 
 		for _, record := range d.RecordInfos {
 			defaultTags := make(map[string]string)
 			var ip string
-			for idx, keyName := range keyMap {
+			for idx, keyName := range defaultKeys {
 				recordItem := fmt.Sprintf("%v", record[idx])
 
 				if keyName == "ip" {
@@ -53,7 +53,6 @@ func NewDNSScrapeTargetProvider(sourceID, dnsFile string, port int) TargetProvid
 				DefaultTags: defaultTags,
 			})
 		}
-
 		return targets
 	}
 }

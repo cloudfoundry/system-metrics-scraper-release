@@ -1,16 +1,17 @@
 package scraper
 
 import (
-	metrics "code.cloudfoundry.org/go-metric-registry"
 	"fmt"
-	"github.com/prometheus/client_model/go"
-	"github.com/prometheus/common/expfmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"sync"
 	"time"
+
+	metrics "code.cloudfoundry.org/go-metric-registry"
+	io_prometheus_client "github.com/prometheus/client_model/go"
+	"github.com/prometheus/common/expfmt"
 
 	"code.cloudfoundry.org/go-loggregator"
 )
@@ -272,7 +273,6 @@ func (s *Scraper) parseTags(m *io_prometheus_client.Metric, t Target) (string, m
 	for k, v := range t.DefaultTags {
 		tags[k] = v
 	}
-
 	sourceID := t.ID
 	for _, l := range m.GetLabel() {
 		if l.GetName() == "source_id" {
