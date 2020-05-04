@@ -11,6 +11,7 @@ require (
 	github.com/armon/go-metrics v0.3.3 // indirect
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
+	github.com/golang/protobuf v1.4.1 // indirect
 	github.com/hashicorp/go-hclog v0.12.2
 	github.com/hashicorp/go-immutable-radix v1.2.0 // indirect
 	github.com/hashicorp/go-msgpack v1.1.5 // indirect
