@@ -33,6 +33,9 @@ packages:
 - metric-scraper
 
 properties:
+  enabled:
+    description: "Enables the system metrics agent scraper"
+    default: true
   scrape_interval:
     description: "The interval to scrape the metrics URL (golang duration)"
     default: 1m
