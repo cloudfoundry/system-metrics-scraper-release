@@ -28,6 +28,9 @@ packages:
 - metric-scraper
 
 properties:
+  enabled:
+    description: "Enables the system metrics agent scraper"
+    default: true
   scrape_interval:
     description: "The interval to scrape the metrics URL (golang duration)"
     default: 1m
@@ -65,3 +68,4 @@ properties:
     description: "TLS certificate for leadership election client signed by the leadership election CA"
   leadership_election.key:
     description: "TLS private key for leadership election client signed by the leadership election CA"
+
