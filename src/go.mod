@@ -11,7 +11,7 @@ require (
 	github.com/armon/go-metrics v0.3.3 // indirect
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect; pinned
-	github.com/hashicorp/go-hclog v0.14.0
+	github.com/hashicorp/go-hclog v0.14.1
 	github.com/hashicorp/go-immutable-radix v1.2.0 // indirect
 	github.com/hashicorp/go-msgpack v1.1.5 // indirect
 	github.com/hashicorp/go-uuid v1.0.2 // indirect
@@ -23,7 +23,8 @@ require (
 	github.com/nats-io/jwt v1.0.1 // indirect
 	github.com/nats-io/nats-server/v2 v2.1.7 // indirect
 	github.com/nats-io/nats.go v1.10.0
-	github.com/onsi/ginkgo v1.12.2
+	github.com/nats-io/nkeys v0.2.0 // indirect
+	github.com/onsi/ginkgo v1.12.3
 	github.com/onsi/gomega v1.10.1
 	github.com/prometheus/client_golang v1.6.0 // indirect
 	github.com/prometheus/client_model v0.2.0
@@ -31,7 +32,7 @@ require (
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37 // indirect
 	golang.org/x/net v0.0.0-20200528225125-3c3fba18258b // indirect
 	golang.org/x/sys v0.0.0-20200523222454-059865788121 // indirect
-	google.golang.org/genproto v0.0.0-20200528191852-705c0b31589b // indirect
+	google.golang.org/genproto v0.0.0-20200601130524-0f60399e6634 // indirect
 	google.golang.org/grpc v1.29.1
 	gopkg.in/yaml.v2 v2.3.0
 )
