@@ -32,7 +32,7 @@ require (
 	github.com/prometheus/procfs v0.1.3 // indirect
 	golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9 // indirect
 	golang.org/x/net v0.0.0-20200602114024-627f9648deb9 // indirect
-	golang.org/x/sys v0.0.0-20200615190026-2780627062e0 // indirect
+	golang.org/x/sys v0.0.0-20200615200032-f1bc736245b1 // indirect
 	google.golang.org/genproto v0.0.0-20200615140333-fd031eab31e7 // indirect
 	google.golang.org/grpc v1.29.1
 	gopkg.in/yaml.v2 v2.3.0
