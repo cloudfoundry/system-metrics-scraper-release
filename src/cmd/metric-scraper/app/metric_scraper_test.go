@@ -40,6 +40,7 @@ var _ = Describe("App", func() {
 		promServer       *promServer
 		spyMetricsClient *metricshelper.SpyMetricsRegistry
 
+		leadershipTestCerts    = testhelper.GenerateCerts("leadershipCA")
 		metronTestCerts        = testhelper.GenerateCerts("loggregatorCA")
 		systemMetricsTestCerts = testhelper.GenerateCerts("systemMetricsCA")
 	)
@@ -47,7 +48,7 @@ var _ = Describe("App", func() {
 	Describe("when configured with a single metrics_url", func() {
 		BeforeEach(func() {
 			spyAgent = newSpyAgent(metronTestCerts)
-			leadership = newSpyLeadership(metronTestCerts)
+			leadership = newSpyLeadership(leadershipTestCerts)
 
 			promServer = newPromServer()
 			promServer.start(systemMetricsTestCerts)
@@ -67,9 +68,9 @@ var _ = Describe("App", func() {
 				MetricsKeyPath:         systemMetricsTestCerts.Key("system-metrics-agent"),
 				MetricsCertPath:        systemMetricsTestCerts.Cert("system-metrics-agent"),
 				MetricsCACertPath:      systemMetricsTestCerts.CA(),
-				LeadershipKeyPath:      metronTestCerts.Key("leadership-client"),
-				LeadershipCertPath:     metronTestCerts.Cert("leadership-client"),
-				LeadershipCACertPath:   metronTestCerts.CA(),
+				LeadershipKeyPath:      leadershipTestCerts.Key("leadership-client"),
+				LeadershipCertPath:     leadershipTestCerts.Cert("leadership-client"),
+				LeadershipCACertPath:   leadershipTestCerts.CA(),
 				MetricsCN:              "system-metrics-agent",
 				LoggregatorIngressAddr: spyAgent.addr,
 				ScrapeInterval:         100 * time.Millisecond,
@@ -436,16 +437,16 @@ func (l *spyLeadership) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(l.statusCode)
 }
 
-func newSpyLeadership(metronTestCerts *testhelper.TestCerts) *spyLeadership {
+func newSpyLeadership(testCerts *testhelper.TestCerts) *spyLeadership {
 	leadership := &spyLeadership{
 		statusCode: http.StatusOK,
 	}
 
 	tlsConfig, err := tlsconfig.Build(
 		tlsconfig.WithIdentityFromFile(
-			metronTestCerts.Cert("leadership-server"),
-			metronTestCerts.Key("leadership-server"),
-		)).Server(tlsconfig.WithClientAuthenticationFromFile(metronTestCerts.CA()))
+			testCerts.Cert("leadership_election"),
+			testCerts.Key("leadership_election"),
+		)).Server(tlsconfig.WithClientAuthenticationFromFile(testCerts.CA()))
 	if err != nil {
 		panic(err)
 	}
