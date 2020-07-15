@@ -1,9 +1,10 @@
 package main
 
 import (
-	metrics "code.cloudfoundry.org/go-metric-registry"
 	"log"
 	"os"
+
+	metrics "code.cloudfoundry.org/go-metric-registry"
 
 	"code.cloudfoundry.org/system-metrics-scraper/cmd/metric-scraper/app"
 )
@@ -25,5 +26,5 @@ func main() {
 		),
 	)
 
-	app.NewMetricScraper(cfg, log, metricClient).Run()
+	app.NewMetricScraper(cfg, os.Stderr, metricClient).Run()
 }

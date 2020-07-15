@@ -1,5 +1,5 @@
 <%
-  leader_addr = "http://127.0.0.1:#{link("leader-election-agent").p("port")}/v1/leader"
+  leader_addr = "https://127.0.0.1:#{link("leader-election-agent").p("port")}/v1/leader"
   certs_dir="/var/vcap/jobs/loggr-system-metric-scraper/config/certs"
 
   process = {

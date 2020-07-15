@@ -1,12 +1,14 @@
 package app
 
 import (
-	metrics "code.cloudfoundry.org/go-metric-registry"
-	"code.cloudfoundry.org/tlsconfig"
+	"io"
 	"log"
 	"net"
 	"net/http"
 	"time"
+
+	metrics "code.cloudfoundry.org/go-metric-registry"
+	"code.cloudfoundry.org/tlsconfig"
 
 	"code.cloudfoundry.org/go-loggregator"
 	"code.cloudfoundry.org/system-metrics-scraper/pkg/scraper"
@@ -26,10 +28,10 @@ type metricsClient interface {
 	NewGauge(name, helpText string, opts ...metrics.MetricOption) metrics.Gauge
 }
 
-func NewMetricScraper(cfg Config, l *log.Logger, m metricsClient) *MetricScraper {
+func NewMetricScraper(cfg Config, w io.Writer, m metricsClient) *MetricScraper {
 	return &MetricScraper{
 		cfg:           cfg,
-		log:           l,
+		log:           log.New(w, "", log.LstdFlags),
 		scrapeTargets: scraper.NewDNSScrapeTargetProvider(cfg.DefaultSourceID, cfg.DNSFile, cfg.ScrapePort),
 		doneChan:      make(chan struct{}),
 		metrics:       m,
@@ -81,6 +83,10 @@ func (m *MetricScraper) scrape() {
 		select {
 		case <-t.C:
 			resp, err := leadershipClient.Get(m.cfg.LeadershipServerAddr)
+			if err != nil {
+				m.log.Printf("failed to connect to leadership server: %s\n", err)
+			}
+
 			if err == nil && resp.StatusCode == http.StatusLocked {
 				continue
 			}

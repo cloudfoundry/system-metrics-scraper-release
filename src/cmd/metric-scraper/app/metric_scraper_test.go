@@ -1,9 +1,7 @@
 package app_test
 
 import (
-	"code.cloudfoundry.org/tlsconfig"
 	"fmt"
-	"google.golang.org/grpc/credentials"
 	"io/ioutil"
 	"log"
 	"net"
@@ -16,8 +14,12 @@ import (
 	"sync"
 	"time"
 
+	"code.cloudfoundry.org/tlsconfig"
+	"google.golang.org/grpc/credentials"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/onsi/gomega/gbytes"
 	"google.golang.org/grpc"
 
 	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
@@ -33,7 +35,7 @@ var _ = Describe("App", func() {
 		scraper     *app.MetricScraper
 		cfg         app.Config
 
-		testLogger       = log.New(GinkgoWriter, "", log.LstdFlags)
+		testLogger       = gbytes.NewBuffer()
 		leadership       *spyLeadership
 		promServer       *promServer
 		spyMetricsClient *metricshelper.SpyMetricsRegistry
@@ -126,6 +128,14 @@ var _ = Describe("App", func() {
 			Eventually(func() int {
 				return len(spyAgent.Envelopes())
 			}).Should(BeNumerically(">", 0))
+		})
+
+		It("should log an error if leadership server fetch returns an error", func() {
+			cfg.LeadershipServerAddr = "htp://blablabla.com"
+			out := gbytes.NewBuffer()
+			scraper = app.NewMetricScraper(cfg, out, spyMetricsClient)
+			go scraper.Run()
+			Eventually(out).Should(gbytes.Say("failed to connect to leadership server"))
 		})
 
 		It("doesn't not return results if the prom endpoint is slow to respond", func() {
