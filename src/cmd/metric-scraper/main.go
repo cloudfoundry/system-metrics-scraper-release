@@ -33,7 +33,7 @@ func main() {
 
 	natsConn := connectToNATS(cfg, log)
 
-	app.NewMetricScraper(cfg, log, metricClient, natsConn).Run()
+	app.NewMetricScraper(cfg, os.Stderr, metricClient, natsConn).Run()
 }
 
 func connectToNATS(cfg app.Config, logger *log.Logger) *nats.Conn {

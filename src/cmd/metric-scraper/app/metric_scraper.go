@@ -1,6 +1,7 @@
 package app
 
 import (
+	"io"
 	"log"
 	"net"
 	"net/http"
@@ -34,10 +35,10 @@ type natsConn interface {
 	Publish(string, []byte) error
 }
 
-func NewMetricScraper(cfg Config, l *log.Logger, m metricsClient, n natsConn) *MetricScraper {
+func NewMetricScraper(cfg Config, w io.Writer, m metricsClient, n natsConn) *MetricScraper {
 	return &MetricScraper{
 		cfg:           cfg,
-		log:           l,
+		log:           log.New(w, "", log.LstdFlags),
 		scrapeTargets: scraper.NewDNSScrapeTargetProvider(cfg.DefaultSourceID, cfg.DNSFile, cfg.ScrapePort),
 		doneChan:      make(chan struct{}),
 		metrics:       m,
@@ -90,7 +91,10 @@ func (m *MetricScraper) scrape() {
 		select {
 		case <-t.C:
 			resp, err := leadershipClient.Get(m.cfg.LeadershipServerAddr)
-			// TODO: if err != nil { handle error }
+			if err != nil {
+				m.log.Printf("failed to connect to leadership server: %s\n", err)
+			}
+
 			if err == nil && resp.StatusCode == http.StatusLocked {
 				continue
 			}
