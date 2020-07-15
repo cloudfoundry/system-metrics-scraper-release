@@ -143,6 +143,7 @@ func (m *MetricScraper) leadershipClient() *http.Client {
 		tlsconfig.WithIdentityFromFile(m.cfg.LeadershipCertPath, m.cfg.LeadershipKeyPath),
 	).Client(
 		tlsconfig.WithAuthorityFromFile(m.cfg.LeadershipCACertPath),
+		tlsconfig.WithServerName("leadership_election"),
 	)
 	if err != nil {
 		m.log.Fatalf("failed to generate leadership election client tls config: %s", err)
