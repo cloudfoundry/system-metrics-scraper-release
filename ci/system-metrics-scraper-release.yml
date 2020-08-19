@@ -1,0 +1,186 @@
+groups:
+- name: release
+  jobs:
+  - system-metrics-scraper-cut-patch
+  - system-metrics-scraper-cut-minor
+  - system-metrics-scraper-cut-major
+  - system-metrics-scraper-create-final-release
+  - system-metrics-scraper-merge-to-develop
+
+
+resources:
+- name: loggregator-ci
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/loggregator-ci.git
+    private_key: ((loggregator-key))
+
+- name: system-metrics-scraper-version
+  type: semver
+  source:
+    driver: git
+    uri: git@github.com:cloudfoundry/system-metrics-scraper-release.git
+    branch: master
+    file: src/version
+    private_key: ((cf-loggregator-oauth-bot-key))
+
+- name: system-metrics-scraper-release
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/system-metrics-scraper-release
+    branch: develop
+    private_key: ((cf-loggregator-oauth-bot-key))
+    disable_ci_skip: true
+    clean_tags: true
+
+- name: system-metrics-scraper-release-master
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/system-metrics-scraper-release
+    branch: master
+    clean_tags: true
+    private_key: ((cf-loggregator-oauth-bot-key))
+
+- name: system-metrics-scraper-release-master-version
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/system-metrics-scraper-release
+    branch: master
+    clean_tags: true
+    private_key: ((cf-loggregator-oauth-bot-key))
+    paths:
+    - src/version
+
+- name: system-metrics-scraper-github-release-drafts
+  type: github-release
+  source:
+    user: cloudfoundry
+    repository: system-metrics-scraper-release
+    access_token: ((access-token))
+    drafts: true
+
+- name: system-metrics-scraper-github-release-published
+  type: github-release
+  source:
+    user: cloudfoundry
+    repository: system-metrics-scraper-release
+    access_token: ((access-token))
+
+
+jobs:
+- name: system-metrics-scraper-cut-patch
+  plan:
+  - put: system-metrics-scraper-version
+    params: {bump: patch}
+- name: system-metrics-scraper-cut-minor
+  plan:
+  - put: system-metrics-scraper-version
+    params: {bump: minor}
+- name: system-metrics-scraper-cut-major
+  plan:
+  - put: system-metrics-scraper-version
+    params: {bump: major}
+
+- name: system-metrics-scraper-create-final-release
+  serial: true
+  plan:
+  - in_parallel:
+    - get: system-metrics-scraper-release-master-version
+    - get: loggregator-ci
+  - task: create-final-release
+    file: loggregator-ci/tasks/create-final-release/master/task.yml
+    input_mapping:
+      master-repo: system-metrics-scraper-release-master-version
+    params:
+      S3_ACCESS_KEY: ((s3-access-key-id))
+      S3_SECRET_KEY: ((s3-secret-access-key))
+      BLOBSTORE_BUCKET: system-metrics-scraper-release-blobs
+      JSON_KEY: ((gcp-service-account-key))
+      SSH_KEY: ((loggregator-key))
+      RELEASE_NAME: System Metrics Scraper
+      AUTO_BUMPABLE_COMMITS: |
+        'Bump modules'
+        'bump golang release'
+        'Merge final release artifacts'
+        'Create final release'
+        'bump to'
+  - put: system-metrics-scraper-release-master
+    params:
+      repository: repos/master-repo
+      rebase: false
+  - try:
+      task: should-publish
+      file: loggregator-ci/tasks/create-final-release/should-publish/task.yml
+      on_success:
+        put: system-metrics-scraper-github-release-published
+        params:
+          name: github-release/name
+          tag: github-release/tag
+          body: github-release/body
+          globs:
+          - github-release/*.tgz
+      on_failure:
+        put: system-metrics-scraper-github-release-drafts
+        params:
+          name: github-release/name
+          tag: github-release/tag
+          body: github-release/body
+          globs:
+            - github-release/*.tgz
+
+- name: system-metrics-scraper-merge-to-develop
+  serial: true
+  plan:
+  - in_parallel:
+    - get: system-metrics-scraper-release
+    - get: system-metrics-scraper-release-master
+      passed: [ system-metrics-scraper-create-final-release ]
+      trigger: true
+    - get: loggregator-ci
+    - get: system-metrics-scraper-github-release-published
+      trigger: true
+  - task: wait-for-releases-to-match
+    input_mapping:
+      master-repo: system-metrics-scraper-release-master
+      published-release: system-metrics-scraper-github-release-published
+    config:
+      image_resource:
+        type: docker-image
+        source:
+          repository: loggregator/base
+      platform: linux
+      inputs:
+        - name: master-repo
+        - name: published-release
+      run:
+        path: /bin/bash
+        args:
+          - "-c"
+          - |
+            set -e
+
+            pushd master-repo > /dev/null
+              master_sha=$(git rev-parse HEAD)
+            popd
+
+            published_sha=$(cat published-release/commit_sha)
+
+            if [[ ${master_sha} != ${published_sha} ]]; then
+              echo "Published release sha doesn't match master repo sha"
+              echo "This job will retrigger once published release or master repo resource is updated"
+              exit 1
+            fi
+  - task: merge-back-to-develop
+    file: loggregator-ci/tasks/merge-to-develop/task.yml
+    input_mapping:
+      master-repo: system-metrics-scraper-release-master
+      develop-repo: system-metrics-scraper-release
+    params:
+      SSH_KEY: ((loggregator-key))
+      MASTER_BRANCH: master
+      DEVELOP_BRANCH: develop
+  - put: system-metrics-scraper-release
+    params:
+      repository: repos/develop-repo
+      rebase: false
+
