@@ -3,7 +3,6 @@ groups:
   jobs:
   - cf-deploy
   - cats
-  - test-releases-can-be-exported
   - system-metrics-scraper-tests
   - system-metrics-scraper-promotion
   - system-metrics-scraper-master-promotion
@@ -55,12 +54,6 @@ resources:
     uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks
     tag_filter: v*
 
-- name: concourse-tasks
-  type: git
-  source:
-    branch: master
-    uri: https://github.com/pivotal-cf/concourse-tasks
-
 - name: deployments-loggregator
   type: git
   source:
@@ -74,14 +67,6 @@ resources:
     uri: git@github.com:cloudfoundry/loggregator-ci
     branch: master
     private_key: ((cf-loggregator-oauth-bot-key))
-
-- name: cf-deployment-concourse-tasks-image
-  type: docker-image
-  source:
-    repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
-    tag: latest
-
-
 
 - name: system-metrics-scraper-release-elect
   type: git
@@ -148,7 +133,7 @@ jobs:
     - get: develop
       resource: system-metrics-scraper-release
       trigger: true
-      passed: ["cats", "test-releases-can-be-exported"]
+      passed: ["cats"]
     - get: system-metrics-scraper-release-elect
   - put: system-metrics-scraper-release-elect
     params:
@@ -188,6 +173,7 @@ jobs:
     - cf-denver-shared-vsphere
     params:
       action: claim
+
 - name: cf-deploy
   serial: true
   serial_groups:
@@ -200,6 +186,8 @@ jobs:
     - get: cf-env
       passed:
       - claim-cf-env
+      tags:
+      - cf-denver-shared-vsphere
     - get: cf-deployment
     - get: cf-deployment-concourse-tasks
     - get: system-metrics-scraper-release
@@ -207,94 +195,15 @@ jobs:
       trigger: true
   - task: deploy-system-metrics-scraper
     file: cf-deployment-concourse-tasks/bosh-deploy-with-created-release/task.yml
-    # TODO: come back and fix this stuff below
     input_mapping:
-      cf-deployment: loggregator-agent-manifest
       toolsmiths-env: cf-env
-      release: loggregator-agent-release
-      ops-files: cf-deployment
+      release: system-metrics-scraper-release
+      ops-files: system-metrics-scraper-release
       vars-files: cf-deployment
     params:
-      MANIFEST_FILE: manifest.yml
-      # OPS_FILES: |
-      #   scale-to-one-az.yml
-      #   use-compiled-releases.yml
-      #   experimental/use-compiled-releases-windows.yml
-      #   use-provided-router-certs.yml
-      #   experimental/fast-deploy-with-downtime-and-danger.yml
-
-      #   experimental/add-metric-store.yml
-      #   denver/add-grafana.yml
-      #   system-metrics/add-system-metrics-agent.yml
-      #   system-metrics-scraper/add-system-metrics-scraper.yml
-
-      #   metrics-discovery/cf-add-metrics-discovery.yml
-
-      #   experimental/use-logcache-syslog-ingress.yml
-
-      #   windows2019-cell.yml
-      #   use-online-windows2019fs.yml
-      #   use-latest-windows2019-stemcell.yml
-      #   experimental/add-system-metrics-agent-windows2019.yml
-      #   experimental/use-logcache-syslog-ingress-windows2019.yml
-      #   metrics-discovery/cf-add-metrics-discovery-windows.yml
-
-      #   denver/add-grafana.yml
-      #   denver/loggregator-clients.yml
-      #   denver/loggregator-acceptance.yml
-
-- name: test-releases-can-be-exported
-  serial: true
-  serial_groups:
-  - bosh-export-releases
-  plan:
-  - in_parallel:
-    - get: concourse-tasks
-    - get: cf-deployment-concourse-tasks-image
-    - get: bbl-state
-      resource: deployments-loggregator
-
-    - get: system-metrics-scraper-release
-      trigger: true
-      passed: ["cf-deploy"]
-
-  - do:
-    - task: export-releases-xenial
-      file: concourse-tasks/release/export/task.yml
-      params:
-        BBL_STATE_DIR: ((acceptance_bbl_state_dir))
-        RELEASE_NAMES: |
-          system-metrics-scraper
-
-    - task: export-releases-windows2019
-      file: concourse-tasks/release/export/task.yml
-      params:
-        STEMCELL_OS: windows2019
-        BBL_STATE_DIR: ((acceptance_bbl_state_dir))
-        RELEASE_NAMES: |
-          system-metrics
-
-    ensure:
-      task: clean-up
-      image: cf-deployment-concourse-tasks-image
-      config:
-        platform: linux
-        inputs:
-        - name: bbl-state
-        params:
-          BBL_STATE_DIR: ((acceptance_bbl_state_dir))
-        run:
-          path: /bin/bash
-          args:
-          - "-c"
-          - |
-            set -e
-            pushd "bbl-state/${BBL_STATE_DIR}" > /dev/null
-              eval "$(bbl print-env)"
-            popd > /dev/null
-            for deployment in $(bosh deployments --column Name | grep compilation-) ; do
-              bosh delete-deployment -d "$deployment" -n
-            done
+      MANIFEST_FILE: cf-deployment.yml
+      OPS_FILES: |
+        manifests/operations/add-system-metrics-scraper.yml
 
 - name: cats
   serial: true
@@ -308,26 +217,24 @@ jobs:
     - get: cf-acceptance-tests
     - get: cf-env
       passed: ["cf-deploy"]
-
+      tags:
+        - cf-denver-shared-vsphere
     - get: system-metrics-scraper-release
       trigger: true
       passed: ["cf-deploy"]
-
   - task: generate-config
-    file: loggregator-ci/tasks/generate-cats-config/task.yml
+    file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
     input_mapping:
-      bbl-state: deployments-loggregator
+      toolsmiths-env: cf-env
+      integration-configs: loggregator-ci
     params:
-      BBL_STATE_DIR: ((acceptance_bbl_state_dir))
-      SYSTEM_DOMAIN: ((acceptance_system_domain))
+      CATS_INTEGRATION_CONFIG_FILE: cats-config.json
   - task: run-cats
     file: cf-deployment-concourse-tasks/run-cats/task.yml
     input_mapping:
-      integration-config: cats-config
-      cf-acceptance-tests: cf-acceptance-tests
+      integration-config: updated-integration-configs
     params:
       CONFIG_FILE_PATH: cats-config.json
-      NODES: 9
 
 - name: unclaim-cf-env
   plan:

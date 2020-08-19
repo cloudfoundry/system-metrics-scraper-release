@@ -45,6 +45,12 @@
     release: system-metrics-scraper
 
 - type: replace
+  path: /releases/name=system-metrics-scraper?
+  value:
+    name: system-metrics-scraper
+    version: latest
+
+- type: replace
   path: /variables/name=system_metrics_scraper?
   value:
     name: system_metrics_scraper
@@ -54,12 +60,6 @@
       extended_key_usage:
       - client_auth
     type: certificate
-
-- type: replace
-  path: /releases/name=system-metrics-scraper?
-  value:
-    name: system-metrics-scraper
-    version: latest
 
 - type: replace
   path: /variables/name=leadership_election_tls?
