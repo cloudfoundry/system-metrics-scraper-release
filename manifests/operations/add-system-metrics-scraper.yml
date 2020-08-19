@@ -6,7 +6,7 @@
       scrape_port: 53035
       system_metrics:
         tls:
-          ca_cert: ((system_metrics.ca))
+          ca_cert: ((system_metrics_scraper.ca))
           cert: ((system_metrics_scraper.certificate))
           key: ((system_metrics_scraper.private_key))
       leadership_election:
