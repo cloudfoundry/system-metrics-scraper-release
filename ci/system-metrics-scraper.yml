@@ -36,7 +36,7 @@ resources:
   type: git
   source:
     uri: https://github.com/cloudfoundry/cf-deployment
-    branch: master
+    branch: main
     private_key: ((loggregator-key))
 
 - name: cf-env
@@ -92,7 +92,7 @@ resources:
   type: git
   source:
     uri: git@github.com:cloudfoundry/system-metrics-scraper-release.git
-    branch: master
+    branch: main
     private_key: ((cf-loggregator-oauth-bot-key))
     disable_ci_skip: true
 
@@ -157,7 +157,7 @@ jobs:
       dest: system-metrics-scraper-release-master
     params:
       SOURCE_BRANCH: release-elect
-      DEST_BRANCH: master
+      DEST_BRANCH: main
       TRACKER_API_TOKEN: ((tracker-api-token))
   - put: system-metrics-scraper-release-master
     params:

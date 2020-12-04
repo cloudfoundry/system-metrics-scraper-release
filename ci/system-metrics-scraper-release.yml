@@ -20,7 +20,7 @@ resources:
   source:
     driver: git
     uri: git@github.com:cloudfoundry/system-metrics-scraper-release.git
-    branch: master
+    branch: main
     file: src/version
     private_key: ((cf-loggregator-oauth-bot-key))
 
@@ -37,7 +37,7 @@ resources:
   type: git
   source:
     uri: git@github.com:cloudfoundry/system-metrics-scraper-release
-    branch: master
+    branch: main
     clean_tags: true
     private_key: ((cf-loggregator-oauth-bot-key))
 
@@ -45,7 +45,7 @@ resources:
   type: git
   source:
     uri: git@github.com:cloudfoundry/system-metrics-scraper-release
-    branch: master
+    branch: main
     clean_tags: true
     private_key: ((cf-loggregator-oauth-bot-key))
     paths:
