@@ -46,7 +46,7 @@ resources:
     hostname: environments.toolsmiths.cf-app.com
     pool_name: cf-deployment
   tags:
-  - cf-denver-shared-vsphere
+  - vsphere-nimbus
 
 - name: cf-deployment-concourse-tasks
   type: git
@@ -170,7 +170,7 @@ jobs:
     trigger: true
   - put: cf-env
     tags:
-    - cf-denver-shared-vsphere
+    - vsphere-nimbus
     params:
       action: claim
 
@@ -187,7 +187,7 @@ jobs:
       passed:
       - claim-cf-env
       tags:
-      - cf-denver-shared-vsphere
+      - vsphere-nimbus
     - get: cf-deployment
     - get: cf-deployment-concourse-tasks
     - get: system-metrics-scraper-release
@@ -218,7 +218,7 @@ jobs:
     - get: cf-env
       passed: ["cf-deploy"]
       tags:
-        - cf-denver-shared-vsphere
+        - vsphere-nimbus
     - get: system-metrics-scraper-release
       trigger: true
       passed: ["cf-deploy"]
@@ -242,10 +242,10 @@ jobs:
     passed: ["cats"]
     trigger: true
     tags:
-      - cf-denver-shared-vsphere
+      - vsphere-nimbus
   - put: cf-env
     tags:
-      - cf-denver-shared-vsphere
+      - vsphere-nimbus
     params:
       env_file: cf-env/metadata
       action: unclaim
