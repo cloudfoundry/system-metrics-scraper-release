@@ -34,8 +34,8 @@ github.com/fatih/color
 # github.com/fsnotify/fsnotify v1.4.9
 ## explicit; go 1.13
 github.com/fsnotify/fsnotify
-# github.com/gogo/protobuf v1.3.1
-## explicit
+# github.com/gogo/protobuf v1.3.2
+## explicit; go 1.15
 # github.com/golang/protobuf v1.4.2
 ## explicit; go 1.9
 github.com/golang/protobuf/jsonpb
@@ -196,7 +196,7 @@ golang.org/x/text/unicode/bidi
 golang.org/x/text/unicode/norm
 # golang.org/x/time v0.0.0-20220224211638-0e9765cccd65
 ## explicit
-# golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543
+# golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 ## explicit; go 1.11
 golang.org/x/xerrors
 golang.org/x/xerrors/internal
