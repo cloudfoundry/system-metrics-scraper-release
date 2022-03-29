@@ -58,5 +58,3 @@ require (
 	github.com/klauspost/compress v1.15.1 // indirect
 	golang.org/x/time v0.0.0-20220224211638-0e9765cccd65 // indirect
 )
-
-replace golang.org/x/sys => golang.org/x/sys v0.0.0-20190801041406-cbf593c0f2f3
