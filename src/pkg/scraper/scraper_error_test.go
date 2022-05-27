@@ -1,8 +1,9 @@
 package scraper_test
 
 import (
-	"code.cloudfoundry.org/system-metrics-scraper/pkg/scraper"
 	"errors"
+
+	"code.cloudfoundry.org/system-metrics-scraper/pkg/scraper"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

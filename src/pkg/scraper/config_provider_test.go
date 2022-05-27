@@ -1,12 +1,13 @@
 package scraper_test
 
 import (
-	"code.cloudfoundry.org/system-metrics-scraper/pkg/scraper"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"time"
+
+	"code.cloudfoundry.org/system-metrics-scraper/pkg/scraper"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

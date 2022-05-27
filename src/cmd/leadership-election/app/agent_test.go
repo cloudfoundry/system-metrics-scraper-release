@@ -1,13 +1,14 @@
 package app_test
 
 import (
-	"code.cloudfoundry.org/tlsconfig"
-	"code.cloudfoundry.org/tlsconfig/certtest"
 	"fmt"
-	"github.com/onsi/gomega/types"
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"code.cloudfoundry.org/tlsconfig"
+	"code.cloudfoundry.org/tlsconfig/certtest"
+	"github.com/onsi/gomega/types"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -22,7 +23,7 @@ var _ = Describe("Agent", func() {
 		agents     map[string]*app.Agent
 		httpClient *http.Client
 
-		caFile  string
+		caFile         string
 		serverCertPair certKeyPair
 	)
 
