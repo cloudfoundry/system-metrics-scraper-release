@@ -8,8 +8,8 @@ import (
 
 	_ "net/http/pprof"
 
-	metrics "code.cloudfoundry.org/go-metric-registry"
 	"code.cloudfoundry.org/go-envstruct"
+	metrics "code.cloudfoundry.org/go-metric-registry"
 	"code.cloudfoundry.org/system-metrics-scraper/cmd/leadership-election/app"
 )
 

@@ -2,11 +2,12 @@ package scraper
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"path/filepath"
 	"time"
+
+	"gopkg.in/yaml.v2"
 )
 
 type PromScraperConfig struct {

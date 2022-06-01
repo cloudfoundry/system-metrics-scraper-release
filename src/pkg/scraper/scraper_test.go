@@ -1,13 +1,14 @@
 package scraper_test
 
 import (
-	metricshelper "code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"errors"
 	"io/ioutil"
 	"net/http"
 	"strings"
 	"sync"
 	"time"
+
+	metricshelper "code.cloudfoundry.org/go-metric-registry/testhelpers"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
