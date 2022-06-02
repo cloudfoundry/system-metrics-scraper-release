@@ -32,7 +32,7 @@ func randomTimeout(minVal time.Duration) <-chan time.Time {
 	if minVal == 0 {
 		return nil
 	}
-	extra := (time.Duration(rand.Int63()) % minVal)
+	extra := time.Duration(rand.Int63()) % minVal
 	return time.After(minVal + extra)
 }
 
@@ -93,6 +93,25 @@ func asyncNotifyBool(ch chan bool, v bool) {
 	select {
 	case ch <- v:
 	default:
+	}
+}
+
+// overrideNotifyBool is used to notify on a bool channel
+// but override existing value if value is present.
+// ch must be 1-item buffered channel.
+//
+// This method does not support multiple concurrent calls.
+func overrideNotifyBool(ch chan bool, v bool) {
+	select {
+	case ch <- v:
+		// value sent, all done
+	case <-ch:
+		// channel had an old value
+		select {
+		case ch <- v:
+		default:
+			panic("race: channel was sent concurrently")
+		}
 	}
 }
 
