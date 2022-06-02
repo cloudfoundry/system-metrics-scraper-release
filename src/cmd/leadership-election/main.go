@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	_ "net/http/pprof"
+	_ "net/http/pprof" //nolint:gosec
 
 	"code.cloudfoundry.org/go-envstruct"
 	metrics "code.cloudfoundry.org/go-metric-registry"
@@ -22,7 +22,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	envstruct.WriteReport(&cfg)
+	envstruct.WriteReport(&cfg) //nolint:errcheck
 
 	logger := log.New(os.Stderr, "", log.LstdFlags)
 	m := metrics.NewRegistry(

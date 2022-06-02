@@ -72,7 +72,7 @@ func getTLSConfig(cfg app.Config) *tls.Config {
 		log.Fatal(err)
 	}
 
-	return &tls.Config{
+	return &tls.Config{ //nolint:gosec
 		Certificates: []tls.Certificate{cert},
 		RootCAs:      caCertPool,
 	}

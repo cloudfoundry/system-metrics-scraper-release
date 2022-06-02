@@ -98,7 +98,7 @@ func WithMetrics(m Metrics) AgentOption {
 
 // Start starts the Agent. It does not block.
 func (a *Agent) Start(caFile, certFile, keyFile string) {
-	tlsConfig, err := buildTLSConfig(caFile, certFile, keyFile)
+	tlsConfig := buildTLSConfig(caFile, certFile, keyFile)
 
 	lis, err := tls.Listen("tcp", fmt.Sprintf("localhost:%d", a.port), tlsConfig)
 	if err != nil {
@@ -143,7 +143,7 @@ func leaderStatusServer(isLeader func() bool) *http.Server {
 	return srv
 }
 
-func buildTLSConfig(caFile, certFile, keyFile string) (*tls.Config, error) {
+func buildTLSConfig(caFile, certFile, keyFile string) *tls.Config {
 	tlsConfig, err := tlsconfig.Build(
 		tlsconfig.WithInternalServiceDefaults(),
 		tlsconfig.WithIdentityFromFile(certFile, keyFile),
@@ -153,7 +153,7 @@ func buildTLSConfig(caFile, certFile, keyFile string) (*tls.Config, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return tlsConfig, err
+	return tlsConfig
 }
 
 func (a *Agent) startRaft() func() bool {

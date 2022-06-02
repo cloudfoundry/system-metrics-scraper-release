@@ -148,7 +148,7 @@ func (s *Scraper) scrape(target Target) (map[string]*io_prometheus_client.Metric
 	}
 
 	defer func() {
-		io.Copy(ioutil.Discard, resp.Body)
+		io.Copy(ioutil.Discard, resp.Body) //nolint:errcheck
 		resp.Body.Close()
 	}()
 

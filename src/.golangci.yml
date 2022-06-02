@@ -6,6 +6,8 @@ linters:
     - gocyclo
     # Inspects source code for security problems.
     - gosec
+    # Checks code formatting
+    - goimports
 
 issues:
   # Disable max issues per linter.
