@@ -312,6 +312,7 @@ func createDNSFile(URL string) string {
 	tmpfn, err = filepath.Abs(tmpfn)
 	Expect(err).ToNot(HaveOccurred())
 
+	//nolint:gosec
 	if err := ioutil.WriteFile(tmpfn, []byte(contents), 0666); err != nil {
 		log.Fatal(err)
 	}
@@ -401,7 +402,8 @@ func (s *promServer) handleRequest(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(toSleep)
 	}
 
-	w.Write([]byte(promOutput))
+	_, err := w.Write([]byte(promOutput))
+	Expect(err).NotTo(HaveOccurred())
 }
 
 func (s *promServer) start(testCerts *testhelper.TestCerts) {
@@ -462,7 +464,7 @@ func newSpyAgent(testCerts *testhelper.TestCerts) *spyAgent {
 	grpcServer := grpc.NewServer(grpc.Creds(serverCreds))
 	loggregator_v2.RegisterIngressServer(grpcServer, agent)
 
-	go grpcServer.Serve(lis)
+	go grpcServer.Serve(lis) //nolint:errcheck
 
 	return agent
 }
