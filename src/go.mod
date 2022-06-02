@@ -7,7 +7,7 @@ require (
 	code.cloudfoundry.org/go-loggregator v0.0.0-20190813173818-049b6bf8152a // pinned
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20200413202920-40d97c8804ec
 	code.cloudfoundry.org/tlsconfig v0.0.0-20200131000646-bbe0f8da39b3
-	github.com/hashicorp/go-hclog v0.14.1
+	github.com/hashicorp/go-hclog v1.2.0
 	github.com/hashicorp/raft v1.3.9
 	github.com/nats-io/nats.go v1.13.1-0.20220308171302-2f2f6968e98d
 	github.com/onsi/ginkgo v1.16.5
