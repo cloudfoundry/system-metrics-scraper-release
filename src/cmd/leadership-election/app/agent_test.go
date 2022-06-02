@@ -28,6 +28,8 @@ var _ = Describe("Agent", func() {
 	)
 
 	BeforeEach(func() {
+		run += GinkgoParallelNode() * 15
+
 		agents = make(map[string]*app.Agent)
 
 		var ca *certtest.Authority
