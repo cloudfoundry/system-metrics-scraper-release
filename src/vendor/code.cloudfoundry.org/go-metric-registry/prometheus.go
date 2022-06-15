@@ -11,6 +11,7 @@ import (
 
 	"code.cloudfoundry.org/tlsconfig"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -57,13 +58,15 @@ func NewRegistry(logger *log.Logger, opts ...RegistryOption) *Registry {
 	registry := prometheus.NewRegistry()
 	pr.registerer = registry
 
-	pr.registerer.MustRegister(prometheus.NewGoCollector())
-	pr.registerer.MustRegister(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
-
 	pr.mux.Handle("/metrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{
 		Registry: pr.registerer,
 	}))
 	return pr
+}
+
+func (p *Registry) RegisterDebugMetrics() {
+	p.registerer.MustRegister(collectors.NewGoCollector())
+	p.registerer.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
 }
 
 // Creates new counter. When a duplicate is registered, the Registry will return
@@ -87,6 +90,18 @@ func (p *Registry) NewGauge(name, helpText string, opts ...MetricOption) Gauge {
 func (p *Registry) NewHistogram(name, helpText string, buckets []float64, opts ...MetricOption) Histogram {
 	h := prometheus.NewHistogram(toHistogramOpts(name, helpText, buckets, opts...))
 	return p.registerCollector(name, h).(Histogram)
+}
+
+func (p *Registry) RemoveGauge(g Gauge) {
+	p.registerer.Unregister(g.(prometheus.Collector))
+}
+
+func (p *Registry) RemoveHistogram(h Histogram) {
+	p.registerer.Unregister(h.(prometheus.Collector))
+}
+
+func (p *Registry) RemoveCounter(c Counter) {
+	p.registerer.Unregister(c.(prometheus.Collector))
 }
 
 func (p *Registry) registerCollector(name string, c prometheus.Collector) prometheus.Collector {
@@ -164,8 +179,8 @@ func (p *Registry) start(ipAddr string, port int) {
 	s := http.Server{
 		Addr:         addr,
 		Handler:      p.mux,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 5 * time.Second,
+		ReadTimeout:  5 * time.Minute,
+		WriteTimeout: 5 * time.Minute,
 	}
 
 	lis, err := net.Listen("tcp", addr)
@@ -177,7 +192,7 @@ func (p *Registry) start(ipAddr string, port int) {
 	parts := strings.Split(lis.Addr().String(), ":")
 	p.port = parts[len(parts)-1]
 
-	go s.Serve(lis)
+	go s.Serve(lis) //nolint:errcheck
 }
 
 func (p *Registry) startTLS(port int, certFile, keyFile, caFile string) {
@@ -196,8 +211,8 @@ func (p *Registry) startTLS(port int, certFile, keyFile, caFile string) {
 		Addr:         addr,
 		Handler:      p.mux,
 		TLSConfig:    tlsConfig,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 5 * time.Second,
+		ReadTimeout:  5 * time.Minute,
+		WriteTimeout: 5 * time.Minute,
 	}
 
 	lis, err := tls.Listen("tcp", addr, tlsConfig)
@@ -209,7 +224,7 @@ func (p *Registry) startTLS(port int, certFile, keyFile, caFile string) {
 	parts := strings.Split(lis.Addr().String(), ":")
 	p.port = parts[len(parts)-1]
 
-	go s.Serve(lis)
+	go s.Serve(lis) //nolint:errcheck
 }
 
 // Options applied to metrics on creation
