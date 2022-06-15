@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	code.cloudfoundry.org/go-envstruct v1.5.0
-	code.cloudfoundry.org/go-loggregator v0.0.0-20190813173818-049b6bf8152a // pinned
+	code.cloudfoundry.org/go-loggregator/v8 v8.0.5
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20220601181753-a64f39ee2597
 	code.cloudfoundry.org/tlsconfig v0.0.0-20211123175040-23cc9f05b6b3
 	github.com/hashicorp/go-hclog v1.2.1
@@ -19,8 +19,7 @@ require (
 )
 
 require (
-	code.cloudfoundry.org/go-diodes v0.0.0-20220601181242-ac2da19efd60 // indirect
-	code.cloudfoundry.org/rfc5424 v0.0.0-20201103192249-000122071b78 // indirect
+	code.cloudfoundry.org/go-diodes v0.0.0-20180905200951-72629b5276e3 // indirect
 	github.com/armon/go-metrics v0.0.0-20190430140413-ec5e00d3c878 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
