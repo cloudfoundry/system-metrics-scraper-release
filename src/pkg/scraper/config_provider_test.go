@@ -9,7 +9,7 @@ import (
 
 	"code.cloudfoundry.org/system-metrics-scraper/pkg/scraper"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 

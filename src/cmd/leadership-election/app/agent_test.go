@@ -10,7 +10,7 @@ import (
 	"code.cloudfoundry.org/tlsconfig/certtest"
 	"github.com/onsi/gomega/types"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	"code.cloudfoundry.org/system-metrics-scraper/cmd/leadership-election/app"
@@ -28,7 +28,7 @@ var _ = Describe("Agent", func() {
 	)
 
 	BeforeEach(func() {
-		run += GinkgoParallelNode() * 15
+		run += GinkgoParallelProcess() * 15
 
 		agents = make(map[string]*app.Agent)
 

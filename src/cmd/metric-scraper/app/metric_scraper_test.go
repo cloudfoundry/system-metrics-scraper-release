@@ -17,7 +17,7 @@ import (
 	"code.cloudfoundry.org/tlsconfig"
 	"google.golang.org/grpc/credentials"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gbytes"
 	"google.golang.org/grpc"
