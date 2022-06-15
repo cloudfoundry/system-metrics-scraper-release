@@ -22,7 +22,7 @@ import (
 	"github.com/onsi/gomega/gbytes"
 	"google.golang.org/grpc"
 
-	"code.cloudfoundry.org/go-loggregator/rpc/loggregator_v2"
+	"code.cloudfoundry.org/go-loggregator/v8/rpc/loggregator_v2"
 	metricshelper "code.cloudfoundry.org/go-metric-registry/testhelpers"
 	"code.cloudfoundry.org/system-metrics-scraper/cmd/metric-scraper/app"
 	"code.cloudfoundry.org/system-metrics-scraper/internal/testhelper"
