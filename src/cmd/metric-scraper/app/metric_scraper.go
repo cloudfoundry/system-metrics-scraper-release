@@ -12,7 +12,7 @@ import (
 	metrics "code.cloudfoundry.org/go-metric-registry"
 	"code.cloudfoundry.org/tlsconfig"
 
-	"code.cloudfoundry.org/go-loggregator/v8"
+	"code.cloudfoundry.org/go-loggregator/v9"
 	"code.cloudfoundry.org/system-metrics-scraper/pkg/scraper"
 )
 
