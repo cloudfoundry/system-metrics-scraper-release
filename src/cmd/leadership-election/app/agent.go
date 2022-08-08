@@ -138,7 +138,8 @@ func leaderStatusServer(isLeader func() bool) *http.Server {
 		w.WriteHeader(http.StatusLocked)
 	})
 	srv := &http.Server{
-		Handler: mux,
+		Handler:           mux,
+		ReadHeaderTimeout: 2 * time.Second,
 	}
 	return srv
 }
