@@ -2,7 +2,6 @@ package scraper_test
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -119,7 +118,7 @@ labels:
 )
 
 func metricPortConfigDir() string {
-	dir, err := ioutil.TempDir("", "")
+	dir, err := os.MkdirTemp("", "")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -128,7 +127,7 @@ func metricPortConfigDir() string {
 }
 
 func writeScrapeConfigFile(metricConfigDir, config, fileName string) {
-	f, err := ioutil.TempFile(metricConfigDir, fileName)
+	f, err := os.CreateTemp(metricConfigDir, fileName)
 	if err != nil {
 		log.Fatal(err)
 	}

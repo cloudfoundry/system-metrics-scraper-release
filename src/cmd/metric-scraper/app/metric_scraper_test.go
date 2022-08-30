@@ -2,7 +2,6 @@ package app_test
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -303,7 +302,7 @@ func buildCounter(sourceID, name, ip string, value float64) *loggregator_v2.Enve
 
 func createDNSFile(URL string) string {
 	contents := fmt.Sprintf(dnsFileTemplate, URL)
-	dir, err := ioutil.TempDir("", "")
+	dir, err := os.MkdirTemp("", "")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -313,7 +312,7 @@ func createDNSFile(URL string) string {
 	Expect(err).ToNot(HaveOccurred())
 
 	//nolint:gosec
-	if err := ioutil.WriteFile(tmpfn, []byte(contents), 0666); err != nil {
+	if err := os.WriteFile(tmpfn, []byte(contents), 0666); err != nil {
 		log.Fatal(err)
 	}
 	return tmpfn

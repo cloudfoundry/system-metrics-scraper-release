@@ -2,8 +2,8 @@ package scraper
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 	"time"
 
@@ -67,7 +67,7 @@ func (p *ConfigProvider) filesForGlobs() []string {
 }
 
 func (p *ConfigProvider) parseConfig(file string) (PromScraperConfig, error) {
-	yamlFile, err := ioutil.ReadFile(file)
+	yamlFile, err := os.ReadFile(file)
 	if err != nil {
 		return PromScraperConfig{}, fmt.Errorf("cannot read file: %s", err)
 	}

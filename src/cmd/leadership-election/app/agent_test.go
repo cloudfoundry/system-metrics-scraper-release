@@ -2,9 +2,9 @@ package app_test
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"code.cloudfoundry.org/tlsconfig"
 	"code.cloudfoundry.org/tlsconfig/certtest"
@@ -138,7 +138,7 @@ type certKeyPair struct {
 }
 
 func tmpFile(prefix string, caBytes []byte) string {
-	file, err := ioutil.TempFile("", prefix)
+	file, err := os.CreateTemp("", prefix)
 	if err != nil {
 		log.Fatal(err)
 	}

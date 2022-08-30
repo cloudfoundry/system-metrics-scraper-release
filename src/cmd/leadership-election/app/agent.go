@@ -3,7 +3,7 @@ package app
 import (
 	"crypto/tls"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net"
 	"net/http"
@@ -36,7 +36,7 @@ type Agent struct {
 // New returns a new Agent.
 func New(nodeIndex int, nodes []string, opts ...AgentOption) *Agent {
 	a := &Agent{
-		log:  log.New(ioutil.Discard, "", 0),
+		log:  log.New(io.Discard, "", 0),
 		port: 8080,
 
 		nodeIndex: nodeIndex,
@@ -234,7 +234,7 @@ func (a *Agent) maintainRaft(localAddr string) {
 			MaxAppendEntries:   100,
 			SnapshotInterval:   time.Second,
 			LeaderLeaseTimeout: 100 * time.Millisecond,
-			LogOutput:          ioutil.Discard,
+			LogOutput:          io.Discard,
 		},
 		nil,
 		store,
