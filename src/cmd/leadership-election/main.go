@@ -50,5 +50,5 @@ func main() {
 	)
 
 	// health endpoints (pprof and expvar)
-	log.Printf("Health: %s", http.ListenAndServe(fmt.Sprintf("localhost:%d", cfg.HealthPort), nil))
+	log.Printf("Health: %s", http.ListenAndServe(fmt.Sprintf("localhost:%d", cfg.HealthPort), nil)) //nolint:gosec
 }
