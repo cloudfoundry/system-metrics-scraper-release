@@ -11,7 +11,7 @@ require (
 	github.com/hashicorp/raft v1.3.11
 	github.com/nats-io/nats.go v1.17.0
 	github.com/onsi/ginkgo/v2 v2.2.0
-	github.com/onsi/gomega v1.20.2
+	github.com/onsi/gomega v1.21.1
 	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.37.0
 	google.golang.org/grpc v1.50.0
