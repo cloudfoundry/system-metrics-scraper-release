@@ -1,12 +1,15 @@
 package scraper
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"strconv"
 	"sync"
 	"time"
+
+	"golang.org/x/sync/semaphore"
 
 	metrics "code.cloudfoundry.org/go-metric-registry"
 	io_prometheus_client "github.com/prometheus/client_model/go"
@@ -22,6 +25,7 @@ type Scraper struct {
 	urlsScraped    metrics.Gauge
 	failedScrapes  metrics.Gauge
 	scrapeDuration metrics.Gauge
+	numWorkers     int
 	defaultID      string
 }
 
@@ -72,6 +76,11 @@ func New(
 	return scraper
 }
 
+func WithNumWorkers(workers int) ScrapeOption {
+	return func(s *Scraper) {
+		s.numWorkers = workers
+	}
+}
 func WithMetricsClient(m metricsClient) ScrapeOption {
 	return func(s *Scraper) {
 		s.urlsScraped = m.NewGauge(
@@ -106,10 +115,22 @@ func (s *Scraper) Scrape() error {
 	var wg sync.WaitGroup
 
 	s.urlsScraped.Set(float64(len(targetList)))
+	sem := semaphore.NewWeighted(int64(s.numWorkers))
 	for _, a := range targetList {
 		wg.Add(1)
 
 		go func(target Target) {
+			err := sem.Acquire(context.Background(), 1)
+			if err != nil {
+				errs <- &ScrapeError{
+					ID:         target.ID,
+					InstanceID: target.InstanceID,
+					MetricURL:  target.MetricURL,
+					Err:        err,
+				}
+				return
+			}
+			defer sem.Release(1)
 			scrapeResult, err := s.scrape(target)
 			if err != nil {
 				errs <- &ScrapeError{

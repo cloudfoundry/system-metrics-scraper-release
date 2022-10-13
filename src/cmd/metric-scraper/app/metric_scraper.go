@@ -79,6 +79,7 @@ func (m *MetricScraper) scrape() {
 		},
 		m.cfg.DefaultSourceID,
 		scraper.WithMetricsClient(m.metrics),
+		scraper.WithNumWorkers(20),
 	)
 
 	leadershipClient := m.leadershipClient()

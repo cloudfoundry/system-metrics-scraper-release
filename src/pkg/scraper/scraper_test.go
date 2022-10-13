@@ -2,6 +2,7 @@ package scraper_test
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -26,7 +27,7 @@ var _ = Describe("Scraper", func() {
 		scraper       *scraper.Scraper
 	}
 
-	var setup = func(targets ...scraper.Target) *testContext {
+	var setup = func(numWorkers int, targets ...scraper.Target) *testContext {
 		spyMetricGetter := newSpyMetricGetter()
 		spyMetricEmitter := newSpyMetricEmitter()
 		spyMetricClient := metricshelper.NewMetricsRegistry()
@@ -39,6 +40,7 @@ var _ = Describe("Scraper", func() {
 			spyMetricGetter.Get,
 			"default-id",
 			scraper.WithMetricsClient(spyMetricClient),
+			scraper.WithNumWorkers(numWorkers),
 		)
 
 		return &testContext{
@@ -58,7 +60,7 @@ var _ = Describe("Scraper", func() {
 
 	Context("gauges", func() {
 		It("emits a gauge metric with the target source ID", func() {
-			tc := setup(scraper.Target{
+			tc := setup(10, scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
 				MetricURL:  "http://some.url/metrics",
@@ -74,7 +76,7 @@ var _ = Describe("Scraper", func() {
 		})
 
 		It("emits a gauge metric with tagged source ID", func() {
-			tc := setup(scraper.Target{
+			tc := setup(10, scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
 				MetricURL:  "http://some.url/metrics",
@@ -90,7 +92,7 @@ var _ = Describe("Scraper", func() {
 		})
 
 		It("emits a gauge with unit from label", func() {
-			tc := setup(scraper.Target{
+			tc := setup(10, scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
 				MetricURL:  "http://some.url/metrics",
@@ -118,7 +120,7 @@ var _ = Describe("Scraper", func() {
 
 	Context("counters", func() {
 		It("emits a counter metric with a default source ID", func() {
-			tc := setup(scraper.Target{
+			tc := setup(10, scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
 				MetricURL:  "http://some.url/metrics",
@@ -142,7 +144,7 @@ var _ = Describe("Scraper", func() {
 		})
 
 		It("emits a counter metric with tagged source ID", func() {
-			tc := setup(scraper.Target{
+			tc := setup(10, scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
 				MetricURL:  "http://some.url/metrics",
@@ -158,7 +160,7 @@ var _ = Describe("Scraper", func() {
 		})
 
 		It("ignores counter metrics with float values", func() {
-			tc := setup(scraper.Target{
+			tc := setup(10, scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
 				MetricURL:  "http://some.url/metrics",
@@ -175,7 +177,7 @@ var _ = Describe("Scraper", func() {
 
 	Context("histograms", func() {
 		It("emits a histogram with a default source ID", func() {
-			tc := setup(scraper.Target{
+			tc := setup(10, scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
 				MetricURL:  "http://some.url/metrics",
@@ -193,7 +195,7 @@ var _ = Describe("Scraper", func() {
 		})
 
 		It("emits a histogram with tagged source ID", func() {
-			tc := setup(scraper.Target{
+			tc := setup(10, scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
 				MetricURL:  "http://some.url/metrics",
@@ -215,7 +217,7 @@ var _ = Describe("Scraper", func() {
 
 	Context("summaries", func() {
 		It("emits a summary with a default source ID", func() {
-			tc := setup(scraper.Target{
+			tc := setup(10, scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
 				MetricURL:  "http://some.url/metrics",
@@ -239,7 +241,7 @@ var _ = Describe("Scraper", func() {
 
 	Context("default tags", func() {
 		It("adds default tags to emitted metrics", func() {
-			tc := setup(scraper.Target{
+			tc := setup(10, scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
 				MetricURL:  "http://some.url/metrics",
@@ -268,7 +270,7 @@ var _ = Describe("Scraper", func() {
 		})
 
 		It("does not add default tags to metrics that already have those tags", func() {
-			tc := setup(scraper.Target{
+			tc := setup(10, scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
 				MetricURL:  "http://some.url/metrics",
@@ -298,7 +300,7 @@ var _ = Describe("Scraper", func() {
 	})
 
 	It("defaults the ID if missing", func() {
-		tc := setup(scraper.Target{
+		tc := setup(10, scraper.Target{
 			InstanceID: "some-instance-id",
 			MetricURL:  "http://some.url/metric",
 		})
@@ -316,7 +318,7 @@ var _ = Describe("Scraper", func() {
 	})
 
 	It("ignores unknown metric types", func() {
-		tc := setup(scraper.Target{
+		tc := setup(10, scraper.Target{
 			ID:         "some-id",
 			InstanceID: "some-instance-id",
 			MetricURL:  "http://some.url/metrics",
@@ -327,7 +329,7 @@ var _ = Describe("Scraper", func() {
 	})
 
 	It("scrapes the given endpoint", func() {
-		tc := setup(scraper.Target{
+		tc := setup(10, scraper.Target{
 			ID:         "some-id",
 			InstanceID: "some-instance-id",
 			MetricURL:  "http://some.url/metrics",
@@ -345,7 +347,7 @@ var _ = Describe("Scraper", func() {
 			"header1": "value1",
 			"header2": "value2",
 		}
-		tc := setup(scraper.Target{
+		tc := setup(10, scraper.Target{
 			ID:         "some-id",
 			InstanceID: "some-instance-id",
 			MetricURL:  "http://some.url/metrics",
@@ -359,7 +361,7 @@ var _ = Describe("Scraper", func() {
 	})
 
 	It("scrapes all endpoints even when one fails", func() {
-		tc := setup(
+		tc := setup(10,
 			scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
@@ -382,7 +384,7 @@ var _ = Describe("Scraper", func() {
 	})
 
 	It("scrapes endpoints asynchronously", func() {
-		tc := setup(
+		tc := setup(10,
 			scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
@@ -410,8 +412,47 @@ var _ = Describe("Scraper", func() {
 		Eventually(func() int { return len(tc.metricGetter.addrs) }, 1).Should(Equal(3))
 	})
 
+	It("scrapes endpoints with max at a time", func() {
+		tc := setup(1,
+			scraper.Target{
+				ID:         "some-id",
+				InstanceID: "some-instance-id",
+				MetricURL:  "http://some.url/metrics",
+			},
+			scraper.Target{
+				ID:         "some-id",
+				InstanceID: "some-instance-id",
+				MetricURL:  "http://some.other.url/metrics",
+			},
+			scraper.Target{
+				ID:         "some-id",
+				InstanceID: "some-instance-id",
+				MetricURL:  "http://some.other.other.url/metrics",
+			},
+		)
+
+		tc.metricGetter.delay <- 2 * time.Second
+		tc.metricGetter.delay <- 2 * time.Second
+		tc.metricGetter.delay <- 2 * time.Second
+
+		addResponse(tc, 200, smallGaugeOutput)
+		addResponse(tc, 200, smallGaugeOutput)
+		addResponse(tc, 200, smallGaugeOutput)
+
+		go tc.scraper.Scrape() //nolint:errcheck
+
+		fmt.Println("zero")
+		Eventually(func() int { return len(tc.metricGetter.addrs) }, 1).Should(Equal(1))
+		fmt.Println("one")
+		Consistently(func() int { return len(tc.metricGetter.addrs) }, 1).Should(Equal(1))
+		fmt.Println("two")
+		Eventually(func() int { return len(tc.metricGetter.addrs) }, 3).Should(Equal(2))
+		fmt.Println("three")
+		Eventually(func() int { return len(tc.metricGetter.addrs) }, 3).Should(Equal(3))
+	})
+
 	It("returns a compilation of errors from scrapes", func() {
-		tc := setup(
+		tc := setup(10,
 			scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
@@ -458,7 +499,7 @@ var _ = Describe("Scraper", func() {
 	})
 
 	It("returns an error if the parser fails", func() {
-		tc := setup(scraper.Target{
+		tc := setup(10, scraper.Target{
 			ID:         "some-id",
 			InstanceID: "some-instance-id",
 			MetricURL:  "http://some.url/metrics",
@@ -468,7 +509,7 @@ var _ = Describe("Scraper", func() {
 	})
 
 	It("returns an error if MetricsGetter returns an error", func() {
-		tc := setup(scraper.Target{
+		tc := setup(10, scraper.Target{
 			ID:         "some-id",
 			InstanceID: "some-instance-id",
 			MetricURL:  "http://some.url/metrics",
@@ -478,7 +519,7 @@ var _ = Describe("Scraper", func() {
 	})
 
 	It("returns an error if the response is not a 200 OK", func() {
-		tc := setup(scraper.Target{
+		tc := setup(10, scraper.Target{
 			ID:         "some-id",
 			InstanceID: "some-instance-id",
 			MetricURL:  "http://some.url/metrics",
@@ -488,7 +529,7 @@ var _ = Describe("Scraper", func() {
 	})
 
 	It("can emit metrics for attempted scrapes", func() {
-		tc := setup(
+		tc := setup(10,
 			scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
@@ -518,7 +559,7 @@ var _ = Describe("Scraper", func() {
 	})
 
 	It("can emit metrics for failed scrapes", func() {
-		tc := setup(
+		tc := setup(10,
 			scraper.Target{
 				ID:         "some-id",
 				InstanceID: "some-instance-id",
@@ -548,7 +589,7 @@ var _ = Describe("Scraper", func() {
 	})
 
 	It("can emit metrics for scrape duration", func() {
-		tc := setup(scraper.Target{
+		tc := setup(10, scraper.Target{
 			ID:         "some-id",
 			InstanceID: "some-instance-id",
 			MetricURL:  "http://some.url/metrics",
