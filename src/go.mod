@@ -9,7 +9,7 @@ require (
 	code.cloudfoundry.org/tlsconfig v0.0.0-20220621140725-0e6fbd869921
 	github.com/hashicorp/go-hclog v1.3.1
 	github.com/hashicorp/raft v1.3.11
-	github.com/nats-io/nats.go v1.17.0
+	github.com/nats-io/nats.go v1.18.0
 	github.com/onsi/ginkgo/v2 v2.3.1
 	github.com/onsi/gomega v1.22.1
 	github.com/prometheus/client_model v0.2.0
