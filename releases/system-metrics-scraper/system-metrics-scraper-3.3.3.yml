@@ -1,0 +1,39 @@
+name: system-metrics-scraper
+version: 3.3.3
+commit_hash: bb8a7c5
+uncommitted_changes: false
+jobs:
+- name: leadership-election
+  version: 693c56e83ad2fae4b62e2a056448949274d495dcd54ce968a923f9b21c0eb06c
+  fingerprint: 693c56e83ad2fae4b62e2a056448949274d495dcd54ce968a923f9b21c0eb06c
+  sha1: sha256:cc505991f59e3365dc2b704a4ce24520420eca5e647a1e66006343fbee965cbf
+  packages:
+  - leadership-election
+- name: loggr-system-metric-scraper
+  version: 943c7428a6b3322f8b9e017386b05aa8ae0d0072baf9d3b2a0b75a794909d999
+  fingerprint: 943c7428a6b3322f8b9e017386b05aa8ae0d0072baf9d3b2a0b75a794909d999
+  sha1: sha256:4768f81c7bd374943536df8edc6d02f1995e2218a8a6fc84f1429a6c241773aa
+  packages:
+  - metric-scraper
+packages:
+- name: golang-1.19-linux
+  version: 3b157e9d492246f0a43d3a68327117efe1465b2883a1f1cc86bc76c0d85cf806
+  fingerprint: 3b157e9d492246f0a43d3a68327117efe1465b2883a1f1cc86bc76c0d85cf806
+  sha1: sha256:8ef5fdee43875176238fb42017aace683c16108adb2c5e33cc97403fdf16d7fc
+  dependencies: []
+- name: leadership-election
+  version: 16bb751a440ab53b1cd6c3c871852bfbe65e6f383bd2353372ba62f4fcc9ea49
+  fingerprint: 16bb751a440ab53b1cd6c3c871852bfbe65e6f383bd2353372ba62f4fcc9ea49
+  sha1: sha256:fecb346bdf70f2f2b9de64fd0d52ffb322d4693eaae262c917365c16f09b1a26
+  dependencies:
+  - golang-1.19-linux
+- name: metric-scraper
+  version: ae81eaa86663f36ea14b13bd62d333a40c19dc0ecd67070690246b4f4799cb0a
+  fingerprint: ae81eaa86663f36ea14b13bd62d333a40c19dc0ecd67070690246b4f4799cb0a
+  sha1: sha256:1fdf61e658c94085eb04273f412adfc55eef9c0d1929db425c4bd8f19b003730
+  dependencies:
+  - golang-1.19-linux
+license:
+  version: b3d3a6be0a737881904a718497cb593042aa0ec56ad91b93934e395a2f9c1a3d
+  fingerprint: b3d3a6be0a737881904a718497cb593042aa0ec56ad91b93934e395a2f9c1a3d
+  sha1: sha256:54d3ef5f7726e20c4a3f53036c657fe7ca79accef85961e1c639416f6fabd01e
