@@ -9,7 +9,7 @@ require (
 	code.cloudfoundry.org/tlsconfig v0.0.0-20220621140725-0e6fbd869921
 	github.com/hashicorp/go-hclog v1.4.0
 	github.com/hashicorp/raft v1.3.11
-	github.com/nats-io/nats.go v1.22.1
+	github.com/nats-io/nats.go v1.23.0
 	github.com/onsi/ginkgo/v2 v2.7.0
 	github.com/onsi/gomega v1.25.0
 	github.com/prometheus/client_model v0.3.0
@@ -45,7 +45,7 @@ require (
 	github.com/prometheus/client_golang v1.14.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
 	github.com/square/certstrap v1.2.0 // indirect
-	golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd // indirect
+	golang.org/x/crypto v0.5.0 // indirect
 	golang.org/x/net v0.5.0 // indirect
 	golang.org/x/sys v0.4.0 // indirect
 	golang.org/x/text v0.6.0 // indirect
