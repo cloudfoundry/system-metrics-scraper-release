@@ -1,7 +1,6 @@
 name: system-metrics-scraper
 blobstore:
-  provider: s3
+  provider: gcs
   options:
     bucket_name: system-metrics-scraper-release-blobs
-    region: us-west-2
 
