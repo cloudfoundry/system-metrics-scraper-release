@@ -11,7 +11,7 @@ require (
 	github.com/hashicorp/raft v1.3.11
 	github.com/nats-io/nats.go v1.23.0
 	github.com/onsi/ginkgo/v2 v2.8.1
-	github.com/onsi/gomega v1.27.0
+	github.com/onsi/gomega v1.27.1
 	github.com/prometheus/client_model v0.3.0
 	github.com/prometheus/common v0.39.0
 	golang.org/x/sync v0.1.0
@@ -46,7 +46,7 @@ require (
 	github.com/prometheus/procfs v0.8.0 // indirect
 	github.com/square/certstrap v1.2.0 // indirect
 	golang.org/x/crypto v0.5.0 // indirect
-	golang.org/x/net v0.6.0 // indirect
+	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 	golang.org/x/tools v0.6.0 // indirect
