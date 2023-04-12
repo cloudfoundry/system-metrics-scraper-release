@@ -8,7 +8,7 @@ require (
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20220601181753-a64f39ee2597
 	code.cloudfoundry.org/tlsconfig v0.0.0-20220621140725-0e6fbd869921
 	github.com/hashicorp/go-hclog v1.5.0
-	github.com/hashicorp/raft v1.3.11
+	github.com/hashicorp/raft v1.4.0
 	github.com/nats-io/nats.go v1.25.0
 	github.com/onsi/ginkgo/v2 v2.9.2
 	github.com/onsi/gomega v1.27.6
@@ -21,7 +21,7 @@ require (
 
 require (
 	code.cloudfoundry.org/go-diodes v0.0.0-20220601181242-ac2da19efd60 // indirect
-	github.com/armon/go-metrics v0.0.0-20190430140413-ec5e00d3c878 // indirect
+	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/fatih/color v1.13.0 // indirect
