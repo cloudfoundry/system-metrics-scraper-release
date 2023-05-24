@@ -71,6 +71,9 @@ github.com/hashicorp/golang-lru/simplelru
 # github.com/hashicorp/raft v1.5.0
 ## explicit; go 1.16
 github.com/hashicorp/raft
+# github.com/klauspost/compress v1.16.5
+## explicit; go 1.18
+github.com/klauspost/compress/flate
 # github.com/mattn/go-colorable v0.1.12
 ## explicit; go 1.13
 github.com/mattn/go-colorable
@@ -82,10 +85,11 @@ github.com/mattn/go-isatty
 github.com/matttproud/golang_protobuf_extensions/pbutil
 # github.com/nats-io/nats-server/v2 v2.8.4
 ## explicit; go 1.17
-# github.com/nats-io/nats.go v1.25.0
+# github.com/nats-io/nats.go v1.26.0
 ## explicit; go 1.19
 github.com/nats-io/nats.go
 github.com/nats-io/nats.go/encoders/builtin
+github.com/nats-io/nats.go/internal/parser
 github.com/nats-io/nats.go/util
 # github.com/nats-io/nkeys v0.4.4
 ## explicit; go 1.19
