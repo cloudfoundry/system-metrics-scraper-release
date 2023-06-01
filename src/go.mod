@@ -10,7 +10,7 @@ require (
 	github.com/hashicorp/go-hclog v1.5.0
 	github.com/hashicorp/raft v1.5.0
 	github.com/nats-io/nats.go v1.26.0
-	github.com/onsi/ginkgo/v2 v2.9.5
+	github.com/onsi/ginkgo/v2 v2.9.7
 	github.com/onsi/gomega v1.27.7
 	github.com/prometheus/client_model v0.4.0
 	github.com/prometheus/common v0.44.0
