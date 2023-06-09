@@ -5,6 +5,8 @@ builds:
     version: 3.3.3
   0fd3cb77-60a7-4450-7f1c-db4bf0a1aea4:
     version: 3.2.3
+  2244f4e6-0504-48bc-6233-04866fbba535:
+    version: 3.3.8
   2c0ef958-704f-4202-4e33-86f3b03dbcbf:
     version: 3.3.1
   369ef86c-a145-4325-6029-56b343c0575a:
