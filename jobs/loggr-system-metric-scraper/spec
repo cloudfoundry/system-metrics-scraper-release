@@ -41,7 +41,7 @@ properties:
     default: 1m
   scrape_port:
     description: "The port where the scraping endpoints are hosted"
-    default: 9100
+    default: 53035
 
   system_metrics.tls.common_name:
     description: "Common name for system metrics agent CA"
