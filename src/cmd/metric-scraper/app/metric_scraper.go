@@ -3,7 +3,6 @@ package app
 import (
 	"io"
 	"log"
-	"net"
 	"net/http"
 	"time"
 
@@ -174,19 +173,8 @@ func newTLSClient(cfg Config) *http.Client {
 		log.Panicf("failed to load API client certificates: %s", err)
 	}
 
-	transport := &http.Transport{
-		Proxy: http.ProxyFromEnvironment,
-		DialContext: (&net.Dialer{
-			Timeout:   cfg.ScrapeTimeout,
-			KeepAlive: 30 * time.Second,
-			DualStack: true,
-		}).DialContext,
-		MaxIdleConns:          100,
-		IdleConnTimeout:       90 * time.Second,
-		TLSHandshakeTimeout:   10 * time.Second,
-		ExpectContinueTimeout: 1 * time.Second,
-		TLSClientConfig:       tlsConfig,
-	}
+	transport := http.DefaultTransport.(*http.Transport).Clone()
+	transport.TLSClientConfig = tlsConfig
 
 	return &http.Client{
 		Transport: transport,
