@@ -47,7 +47,7 @@ type Config struct {
 func LoadConfig(log *log.Logger) Config {
 	cfg := Config{
 		ScrapeInterval: time.Minute,
-		ScrapeTimeout:  time.Second,
+		ScrapeTimeout:  time.Minute,
 	}
 
 	if err := envstruct.Load(&cfg); err != nil {
