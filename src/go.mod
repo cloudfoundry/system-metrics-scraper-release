@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	code.cloudfoundry.org/go-envstruct v1.6.0
-	code.cloudfoundry.org/go-loggregator/v9 v9.0.7
+	code.cloudfoundry.org/go-loggregator/v9 v9.0.8
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20220601181753-a64f39ee2597
 	code.cloudfoundry.org/tlsconfig v0.0.0-20220621140725-0e6fbd869921
 	github.com/hashicorp/go-hclog v1.5.0
@@ -46,10 +46,10 @@ require (
 	github.com/prometheus/client_golang v1.15.1 // indirect
 	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/square/certstrap v1.2.0 // indirect
-	golang.org/x/crypto v0.12.0 // indirect
-	golang.org/x/net v0.14.0 // indirect
+	golang.org/x/crypto v0.13.0 // indirect
+	golang.org/x/net v0.15.0 // indirect
 	golang.org/x/sys v0.12.0 // indirect
-	golang.org/x/text v0.12.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/tools v0.12.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230711160842-782d3b101e98 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
