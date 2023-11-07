@@ -38,7 +38,7 @@ require (
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0 // indirect
-	github.com/nats-io/nkeys v0.4.5 // indirect
+	github.com/nats-io/nkeys v0.4.6 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/nxadm/tail v1.4.8 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
@@ -47,7 +47,7 @@ require (
 	github.com/square/certstrap v1.2.0 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
-	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/sys v0.14.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/tools v0.12.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230822172742-b8732ec3820d // indirect
