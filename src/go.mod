@@ -3,7 +3,7 @@ module code.cloudfoundry.org/system-metrics-scraper
 go 1.20
 
 require (
-	code.cloudfoundry.org/go-envstruct v1.6.0
+	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v9 v9.1.0
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20220601181753-a64f39ee2597
 	code.cloudfoundry.org/tlsconfig v0.0.0-20220621140725-0e6fbd869921
