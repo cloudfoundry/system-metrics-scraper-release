@@ -68,7 +68,7 @@ github.com/hashicorp/go-msgpack/v2/codec
 # github.com/hashicorp/golang-lru v0.5.1
 ## explicit
 github.com/hashicorp/golang-lru/simplelru
-# github.com/hashicorp/raft v1.6.0
+# github.com/hashicorp/raft v1.6.1
 ## explicit; go 1.20
 github.com/hashicorp/raft
 # github.com/klauspost/compress v1.17.2
