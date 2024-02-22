@@ -13,7 +13,7 @@ require (
 	github.com/onsi/ginkgo/v2 v2.15.0
 	github.com/onsi/gomega v1.31.1
 	github.com/prometheus/client_model v0.6.0
-	github.com/prometheus/common v0.47.0
+	github.com/prometheus/common v0.48.0
 	golang.org/x/sync v0.6.0
 	google.golang.org/grpc v1.61.1
 	gopkg.in/yaml.v3 v3.0.1
