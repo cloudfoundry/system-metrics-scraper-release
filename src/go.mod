@@ -14,7 +14,7 @@ require (
 	github.com/onsi/gomega v1.32.0
 	github.com/prometheus/client_model v0.6.1
 	github.com/prometheus/common v0.51.1
-	golang.org/x/sync v0.6.0
+	golang.org/x/sync v0.7.0
 	google.golang.org/grpc v1.63.0
 	gopkg.in/yaml.v3 v3.0.1
 )
