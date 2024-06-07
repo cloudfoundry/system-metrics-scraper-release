@@ -8,7 +8,7 @@ require (
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20220601181753-a64f39ee2597
 	code.cloudfoundry.org/tlsconfig v0.0.0-20220621140725-0e6fbd869921
 	github.com/hashicorp/go-hclog v1.6.3
-	github.com/hashicorp/raft v1.6.1
+	github.com/hashicorp/raft v1.7.0
 	github.com/nats-io/nats.go v1.35.0
 	github.com/onsi/ginkgo/v2 v2.19.0
 	github.com/onsi/gomega v1.33.1
