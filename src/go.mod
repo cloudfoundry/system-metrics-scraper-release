@@ -1,6 +1,6 @@
 module code.cloudfoundry.org/system-metrics-scraper
 
-go 1.21
+go 1.22
 
 require (
 	code.cloudfoundry.org/go-envstruct v1.7.0
