@@ -177,10 +177,11 @@ func WithPublicServer(port int) RegistryOption {
 func (p *Registry) start(ipAddr string, port int) {
 	addr := fmt.Sprintf("%s:%d", ipAddr, port)
 	s := http.Server{
-		Addr:         addr,
-		Handler:      p.mux,
-		ReadTimeout:  5 * time.Minute,
-		WriteTimeout: 5 * time.Minute,
+		Addr:              addr,
+		Handler:           p.mux,
+		ReadTimeout:       5 * time.Minute,
+		ReadHeaderTimeout: 5 * time.Minute,
+		WriteTimeout:      5 * time.Minute,
 	}
 
 	lis, err := net.Listen("tcp", addr)
@@ -208,11 +209,12 @@ func (p *Registry) startTLS(port int, certFile, keyFile, caFile string) {
 
 	addr := fmt.Sprintf("127.0.0.1:%d", port)
 	s := http.Server{
-		Addr:         addr,
-		Handler:      p.mux,
-		TLSConfig:    tlsConfig,
-		ReadTimeout:  5 * time.Minute,
-		WriteTimeout: 5 * time.Minute,
+		Addr:              addr,
+		Handler:           p.mux,
+		TLSConfig:         tlsConfig,
+		ReadTimeout:       5 * time.Minute,
+		ReadHeaderTimeout: 5 * time.Minute,
+		WriteTimeout:      5 * time.Minute,
 	}
 
 	lis, err := tls.Listen("tcp", addr, tlsConfig)
