@@ -8,7 +8,7 @@ require (
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v9 v9.2.1
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20240731205343-e778db45fec9
-	code.cloudfoundry.org/tlsconfig v0.0.0-20240730181439-b476395a9e4e
+	code.cloudfoundry.org/tlsconfig v0.0.0-20240804182054-12ab4b1e7eda
 	github.com/hashicorp/go-hclog v1.6.3
 	github.com/hashicorp/raft v1.7.0
 	github.com/nats-io/nats.go v1.36.0
@@ -16,7 +16,7 @@ require (
 	github.com/onsi/gomega v1.34.1
 	github.com/prometheus/client_model v0.6.1
 	github.com/prometheus/common v0.55.0
-	golang.org/x/sync v0.7.0
+	golang.org/x/sync v0.8.0
 	google.golang.org/grpc v1.65.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -49,7 +49,7 @@ require (
 	golang.org/x/crypto v0.25.0 // indirect
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56 // indirect
 	golang.org/x/net v0.27.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
+	golang.org/x/sys v0.23.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/tools v0.23.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240730163845-b1a4ccb954bf // indirect
