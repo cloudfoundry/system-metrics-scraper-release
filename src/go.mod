@@ -11,7 +11,7 @@ require (
 	code.cloudfoundry.org/tlsconfig v0.0.0-20240808182450-b1b581e211a2
 	github.com/hashicorp/go-hclog v1.6.3
 	github.com/hashicorp/raft v1.7.0
-	github.com/nats-io/nats.go v1.36.0
+	github.com/nats-io/nats.go v1.37.0
 	github.com/onsi/ginkgo/v2 v2.20.0
 	github.com/onsi/gomega v1.34.1
 	github.com/prometheus/client_model v0.6.1
@@ -52,6 +52,6 @@ require (
 	golang.org/x/sys v0.24.0 // indirect
 	golang.org/x/text v0.17.0 // indirect
 	golang.org/x/tools v0.24.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240808171019-573a1156607a // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240812133136-8ffd90a71988 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 )
