@@ -1,4 +1,4 @@
-# code.cloudfoundry.org/go-diodes v0.0.0-20240813203737-5032edb05ceb
+# code.cloudfoundry.org/go-diodes v0.0.0-20240911205836-e7f77fdf9650
 ## explicit; go 1.22
 code.cloudfoundry.org/go-diodes
 # code.cloudfoundry.org/go-envstruct v1.7.0
@@ -8,8 +8,8 @@ code.cloudfoundry.org/go-envstruct
 ## explicit; go 1.21
 code.cloudfoundry.org/go-loggregator/v9
 code.cloudfoundry.org/go-loggregator/v9/rpc/loggregator_v2
-# code.cloudfoundry.org/go-metric-registry v0.0.0-20240828184116-9710cd731bb8
-## explicit; go 1.21
+# code.cloudfoundry.org/go-metric-registry v0.0.0-20240911230103-8810864fa5d2
+## explicit; go 1.22
 code.cloudfoundry.org/go-metric-registry
 code.cloudfoundry.org/go-metric-registry/testhelpers
 # code.cloudfoundry.org/tlsconfig v0.5.0
@@ -232,7 +232,7 @@ golang.org/x/tools/go/ast/inspector
 # google.golang.org/genproto/googleapis/rpc v0.0.0-20240903143218-8af14fe29dc1
 ## explicit; go 1.21
 google.golang.org/genproto/googleapis/rpc/status
-# google.golang.org/grpc v1.66.1
+# google.golang.org/grpc v1.66.2
 ## explicit; go 1.21
 google.golang.org/grpc
 google.golang.org/grpc/attributes
