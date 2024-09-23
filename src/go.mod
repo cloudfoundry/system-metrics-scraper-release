@@ -17,7 +17,7 @@ require (
 	github.com/prometheus/client_model v0.6.1
 	github.com/prometheus/common v0.59.1
 	golang.org/x/sync v0.8.0
-	google.golang.org/grpc v1.66.2
+	google.golang.org/grpc v1.67.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -42,7 +42,7 @@ require (
 	github.com/nats-io/nkeys v0.4.7 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/prometheus/client_golang v1.20.3 // indirect
+	github.com/prometheus/client_golang v1.20.4 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/square/certstrap v1.3.0 // indirect
 	go.step.sm/crypto v0.52.0 // indirect
