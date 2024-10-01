@@ -8,7 +8,7 @@ require (
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v9 v9.2.1
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20240924162441-23e55bf8b6be
-	code.cloudfoundry.org/tlsconfig v0.5.0
+	code.cloudfoundry.org/tlsconfig v0.6.0
 	github.com/hashicorp/go-hclog v1.6.3
 	github.com/hashicorp/raft v1.7.1
 	github.com/nats-io/nats.go v1.37.0
