@@ -15,7 +15,7 @@ require (
 	github.com/onsi/ginkgo/v2 v2.20.2
 	github.com/onsi/gomega v1.34.2
 	github.com/prometheus/client_model v0.6.1
-	github.com/prometheus/common v0.59.1
+	github.com/prometheus/common v0.60.0
 	golang.org/x/sync v0.8.0
 	google.golang.org/grpc v1.67.0
 	gopkg.in/yaml.v3 v3.0.1
