@@ -101,6 +101,8 @@ builds:
     version: 3.2.7
   f25cb92d-b6d2-4fd2-4b5e-9180e415431e:
     version: 4.0.8
+  f69177ad-3dc0-46b7-6948-d5fbc44d4797:
+    version: 4.0.15
   fa944725-e8a2-45e7-5c37-cc94a60bdbe0:
     version: 3.2.1
 format-version: "2"
