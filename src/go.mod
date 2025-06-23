@@ -7,7 +7,7 @@ toolchain go1.23.8
 require (
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v9 v9.2.1
-	code.cloudfoundry.org/go-metric-registry v0.0.0-20250611124144-ca953cadd16e
+	code.cloudfoundry.org/go-metric-registry v0.0.0-20250616201327-f53d89d4167e
 	code.cloudfoundry.org/tlsconfig v0.29.0
 	github.com/hashicorp/go-hclog v1.6.3
 	github.com/hashicorp/raft v1.7.3
@@ -15,7 +15,7 @@ require (
 	github.com/onsi/ginkgo/v2 v2.23.4
 	github.com/onsi/gomega v1.37.0
 	github.com/prometheus/client_model v0.6.2
-	github.com/prometheus/common v0.64.0
+	github.com/prometheus/common v0.65.0
 	golang.org/x/sync v0.15.0
 	google.golang.org/grpc v1.73.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -46,7 +46,7 @@ require (
 	github.com/prometheus/client_golang v1.22.0 // indirect
 	github.com/prometheus/procfs v0.16.1 // indirect
 	github.com/square/certstrap v1.3.0 // indirect
-	go.step.sm/crypto v0.66.0 // indirect
+	go.step.sm/crypto v0.67.0 // indirect
 	go.uber.org/automaxprocs v1.6.0 // indirect
 	golang.org/x/crypto v0.39.0 // indirect
 	golang.org/x/net v0.41.0 // indirect
