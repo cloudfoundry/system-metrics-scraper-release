@@ -1,0 +1,50 @@
+name: system-metrics-scraper
+version: 4.0.22
+commit_hash: ea52d22e
+uncommitted_changes: false
+jobs:
+- name: leadership-election
+  version: 693c56e83ad2fae4b62e2a056448949274d495dcd54ce968a923f9b21c0eb06c
+  fingerprint: 693c56e83ad2fae4b62e2a056448949274d495dcd54ce968a923f9b21c0eb06c
+  sha1: sha256:cc505991f59e3365dc2b704a4ce24520420eca5e647a1e66006343fbee965cbf
+  packages:
+  - leadership-election
+- name: loggr-system-metric-scraper
+  version: 63433054c2706fa4ab778aed9c32dae0cfc132746e034d8e5928a7d344a7eb90
+  fingerprint: 63433054c2706fa4ab778aed9c32dae0cfc132746e034d8e5928a7d344a7eb90
+  sha1: sha256:f5c3d05f058ff3a674f9e6ef47c7edf5942e4a7ab0e8f7b034334fc44c304d2d
+  packages:
+  - metric-scraper
+packages:
+- name: golang-1.25-darwin
+  version: 42a53f26530ff4810e952e0518cb6353d8ddbeebbeda52aa6efc652e274435b9
+  fingerprint: 42a53f26530ff4810e952e0518cb6353d8ddbeebbeda52aa6efc652e274435b9
+  sha1: sha256:5383764bba16625d2e9b71ea04466bc96d1d058160ecf699c6833ae10d7342f5
+  dependencies: []
+- name: golang-1.25-linux
+  version: 1e4dadb8a796a20044e177a108eec65780cd59c308da84f7fdbfdbc758cdf312
+  fingerprint: 1e4dadb8a796a20044e177a108eec65780cd59c308da84f7fdbfdbc758cdf312
+  sha1: sha256:1c0ded140111ca0d1256b8f20c29b41fcaed6384f5a9b12ef5362ed1783c974f
+  dependencies: []
+- name: golang-1.25-windows
+  version: fb4cf863311cceb62a13615813687871d16e7d71f93817ec7b533d6d569e7880
+  fingerprint: fb4cf863311cceb62a13615813687871d16e7d71f93817ec7b533d6d569e7880
+  sha1: sha256:c212dcb301799e26efb1d5d4ec900fbde6e3c4a269e9f08c06b96b8d39b1a520
+  dependencies: []
+- name: leadership-election
+  version: b31c43fa43380cd9a35f83d6dd527a4377546817d88f6a4fa4f7a013bc98298d
+  fingerprint: b31c43fa43380cd9a35f83d6dd527a4377546817d88f6a4fa4f7a013bc98298d
+  sha1: sha256:2ae99395996c3f8639adbee771d010b6186c1927174079448c200d18beb78352
+  dependencies:
+  - golang-1.25-linux
+- name: metric-scraper
+  version: 9320e252148d9de59e8905b9419640782aaa30dbe920ace5004837fa0cfbc403
+  fingerprint: 9320e252148d9de59e8905b9419640782aaa30dbe920ace5004837fa0cfbc403
+  sha1: sha256:9ee114a3cc82f1a1167b09e8043aa7e8fd16da5458998e7cf109026e641e15b4
+  dependencies:
+  - golang-1.25-linux
+license:
+  version: b3d3a6be0a737881904a718497cb593042aa0ec56ad91b93934e395a2f9c1a3d
+  fingerprint: b3d3a6be0a737881904a718497cb593042aa0ec56ad91b93934e395a2f9c1a3d
+  sha1: sha256:54d3ef5f7726e20c4a3f53036c657fe7ca79accef85961e1c639416f6fabd01e
+no_compression: false
