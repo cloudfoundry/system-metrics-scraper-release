@@ -5,11 +5,11 @@ go 1.25.0
 require (
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v9 v9.2.1
-	code.cloudfoundry.org/go-metric-registry v0.0.0-20260316221732-b5ae994e6b10
-	code.cloudfoundry.org/tlsconfig v0.48.0
+	code.cloudfoundry.org/go-metric-registry v0.0.0-20260325091030-e6272bdc60ad
+	code.cloudfoundry.org/tlsconfig v0.49.0
 	github.com/hashicorp/go-hclog v1.6.3
 	github.com/hashicorp/raft v1.7.3
-	github.com/nats-io/nats.go v1.49.0
+	github.com/nats-io/nats.go v1.50.0
 	github.com/onsi/ginkgo/v2 v2.28.1
 	github.com/onsi/gomega v1.39.1
 	github.com/prometheus/client_model v0.6.2
