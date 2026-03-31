@@ -2,7 +2,7 @@
 name: metric-scraper
 
 dependencies:
-- golang-1.25-linux
+- golang-1.26-linux
 files:
 - cmd/metric-scraper/**/*.go
 - pkg/**/*.go
