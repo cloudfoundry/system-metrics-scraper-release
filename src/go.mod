@@ -15,7 +15,7 @@ require (
 	github.com/prometheus/client_model v0.6.2
 	github.com/prometheus/common v0.67.5
 	golang.org/x/sync v0.20.0
-	google.golang.org/grpc v1.80.0
+	google.golang.org/grpc v1.81.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
