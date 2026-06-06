@@ -91,6 +91,8 @@ builds:
     version: 2.0.10
   b41160ba-7311-443e-703a-1f7137fff00c:
     version: 4.0.20
+  b68488bd-2607-411f-7f8c-000b13b54afb:
+    version: 4.0.27
   bf38ec2b-c1e1-478a-6264-e8d2a41d477c:
     version: 3.3.10
   bfb34d69-1bde-4ba4-47a3-bdc31e85c6c7:
