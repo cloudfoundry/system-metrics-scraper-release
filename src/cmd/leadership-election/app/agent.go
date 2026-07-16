@@ -7,7 +7,6 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"sync"
 	"time"
 
 	metrics "code.cloudfoundry.org/go-metric-registry"
@@ -23,14 +22,13 @@ type Agent struct {
 	log  *log.Logger
 	port int
 	lis  net.Listener
+	srv  *http.Server
 	m    Metrics
 
 	nodeIndex int
 	nodes     []string
 
-	mu      sync.RWMutex
-	r       *raft.Raft
-	network *errorCheckingTransport
+	r *raft.Raft
 }
 
 // New returns a new Agent.
@@ -120,11 +118,23 @@ func (a *Agent) Start(caFile, certFile, keyFile string) {
 		}
 	}()
 
-	srv := leaderStatusServer(isLeader)
+	a.srv = leaderStatusServer(isLeader)
 
 	go func() {
-		a.log.Fatal(srv.Serve(lis))
+		if err := a.srv.Serve(lis); err != nil && err != http.ErrServerClosed {
+			a.log.Fatal(err)
+		}
 	}()
+}
+
+// Shutdown stops the Raft cluster and the HTTP server.
+func (a *Agent) Shutdown() {
+	if a.r != nil {
+		_ = a.r.Shutdown()
+	}
+	if a.srv != nil {
+		_ = a.srv.Close()
+	}
 }
 
 func leaderStatusServer(isLeader func() bool) *http.Server {
@@ -164,7 +174,7 @@ func (a *Agent) startRaft() func() bool {
 		a.log.Fatalf("failed to resolve address %s: %s", localAddr, err)
 	}
 
-	tcpTransport, err := raft.NewTCPTransportWithLogger(
+	transport, err := raft.NewTCPTransportWithLogger(
 		localAddr,
 		addr,
 		100,
@@ -174,50 +184,22 @@ func (a *Agent) startRaft() func() bool {
 	if err != nil {
 		a.log.Fatalf("failed to create raft TCP transport: %s", err)
 	}
-	a.network = newErrorCheckingTransport(tcpTransport)
 
-	a.maintainRaft(localAddr)
-
-	go func() {
-		// Prune dead nodes
-		for range time.Tick(10 * time.Millisecond) {
-			a.maintainRaft(localAddr)
-		}
-	}()
+	a.initRaft(localAddr, transport)
 
 	return func() bool {
-		a.mu.RLock()
-		defer a.mu.RUnlock()
 		return a.r.Leader() == raft.ServerAddress(addr.String())
 	}
 }
 
-func (a *Agent) maintainRaft(localAddr string) {
-	a.mu.Lock()
-	defer a.mu.Unlock()
-
-	if !a.network.anyDead() && a.r != nil {
-		return
-	}
-
-	firstBootup := a.r == nil
-
-	if !firstBootup {
-		a.r.Shutdown()
-	}
-
+// initRaft initializes the Raft cluster once at startup. It is never called
+// again after Start() returns. The cluster is not rebuilt if peers become
+// temporarily unreachable; standard Raft handles unreachable peers internally.
+func (a *Agent) initRaft(localAddr string, transport raft.Transport) {
 	var peers []raft.Server
 	for _, addr := range a.nodes {
-		id := raft.ServerID(addr)
-		if !firstBootup && !a.network.isWorking(id) && addr != localAddr {
-			// Dead/faulty node. Don't include as peer.
-			a.network.resetError(id)
-			continue
-		}
-
-		// Not dead yet
 		peers = append(peers, raft.Server{
-			ID:      id,
+			ID:      raft.ServerID(addr),
 			Address: raft.ServerAddress(addr),
 		})
 	}
@@ -240,9 +222,8 @@ func (a *Agent) maintainRaft(localAddr string) {
 		store,
 		store,
 		raft.NewInmemSnapshotStore(),
-		a.network,
+		transport,
 	)
-
 	if err != nil {
 		a.log.Fatalf("failed to create raft cluster: %s", err)
 	}
@@ -254,102 +235,4 @@ func (a *Agent) maintainRaft(localAddr string) {
 // 127.0.0.1:8080). It is only valid after calling Start().
 func (a *Agent) Addr() string {
 	return a.lis.Addr().String()
-}
-
-type errorCheckingTransport struct {
-	raft.Transport
-	nodeStatus map[raft.ServerID]serverStatus
-	mu         sync.RWMutex
-}
-
-type serverStatus struct {
-	errCount        int
-	verifiedWorking bool
-}
-
-func newErrorCheckingTransport(t raft.Transport) *errorCheckingTransport {
-	return &errorCheckingTransport{
-		Transport:  t,
-		nodeStatus: make(map[raft.ServerID]serverStatus),
-	}
-}
-
-// AppendEntriesPipeline returns an interface that can be used to pipeline
-// AppendEntries requests.
-func (t *errorCheckingTransport) AppendEntriesPipeline(id raft.ServerID, target raft.ServerAddress) (raft.AppendPipeline, error) {
-	p, err := t.Transport.AppendEntriesPipeline(id, target)
-
-	if err != nil {
-		t.incError(id)
-		return nil, err
-	}
-	t.markWorking(id)
-	return p, nil
-}
-
-// AppendEntries sends the appropriate RPC to the target node.
-func (t *errorCheckingTransport) AppendEntries(id raft.ServerID, target raft.ServerAddress, args *raft.AppendEntriesRequest, resp *raft.AppendEntriesResponse) error {
-	err := t.Transport.AppendEntries(id, target, args, resp)
-
-	if err != nil {
-		t.incError(id)
-		return err
-	}
-	t.markWorking(id)
-	return nil
-}
-
-// RequestVote sends the appropriate RPC to the target node.
-func (t *errorCheckingTransport) RequestVote(id raft.ServerID, target raft.ServerAddress, args *raft.RequestVoteRequest, resp *raft.RequestVoteResponse) error {
-	err := t.Transport.RequestVote(id, target, args, resp)
-
-	if err != nil {
-		t.incError(id)
-		return err
-	}
-	t.markWorking(id)
-	return nil
-}
-
-func (t *errorCheckingTransport) isWorking(id raft.ServerID) bool {
-	t.mu.RLock()
-	defer t.mu.RUnlock()
-
-	return t.nodeStatus[id].verifiedWorking
-}
-
-func (t *errorCheckingTransport) anyDead() bool {
-	t.mu.RLock()
-	defer t.mu.RUnlock()
-
-	for _, v := range t.nodeStatus {
-		if v.errCount > 2 {
-			return true
-		}
-	}
-
-	return false
-}
-
-func (t *errorCheckingTransport) resetError(id raft.ServerID) {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-	t.nodeStatus[id] = serverStatus{}
-}
-
-func (t *errorCheckingTransport) incError(id raft.ServerID) {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-
-	s := t.nodeStatus[id]
-	s.errCount++
-	s.verifiedWorking = false
-	t.nodeStatus[id] = s
-}
-
-func (t *errorCheckingTransport) markWorking(id raft.ServerID) {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-
-	t.nodeStatus[id] = serverStatus{verifiedWorking: true}
 }

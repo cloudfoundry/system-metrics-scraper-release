@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sort"
 
 	"code.cloudfoundry.org/tlsconfig"
 	"code.cloudfoundry.org/tlsconfig/certtest"
@@ -51,16 +52,12 @@ var _ = Describe("Agent", func() {
 
 	AfterEach(func() {
 		run += 2 * len(agents)
-
-		// We set up fake and not serviced addresses
-		run += 7
 	})
 
 	It("returns a 200 if it is the leader", func() {
 		var nodes []string
 
-		// There are 3 intra network addresses and 7 fake addresses to simulate unresponsive agents
-		for i := 3; i <= 12; i++ {
+		for i := 3; i < 6; i++ {
 			nodes = append(nodes, fmt.Sprintf("127.0.0.1:%d", run+i))
 		}
 
@@ -73,13 +70,41 @@ var _ = Describe("Agent", func() {
 	It("chooses a leader even if nodes are DNS entries", func() {
 		var nodes []string
 
-		// There are 3 intra network addresses and 7 fake addresses to simulate unresponsive agents
-		for i := 3; i <= 12; i++ {
+		for i := 3; i < 6; i++ {
 			nodes = append(nodes, fmt.Sprintf("localhost:%d", run+i))
 		}
 
 		agents = startAgents(nodes, caFile, serverCertPair)
 
+		Eventually(getLeaderStatusFunc(agents, httpClient), 10).Should(haveSingleLeader(agents))
+		Consistently(getLeaderStatusFunc(agents, httpClient), 3).Should(haveSingleLeader(agents))
+	})
+
+	It("does not produce multiple leaders when a peer becomes unreachable", func() {
+		var nodes []string
+
+		for i := 3; i < 6; i++ {
+			nodes = append(nodes, fmt.Sprintf("127.0.0.1:%d", run+i))
+		}
+
+		agents = startAgents(nodes, caFile, serverCertPair)
+
+		// Establish a stable single leader across all three nodes.
+		Eventually(getLeaderStatusFunc(agents, httpClient), 10).Should(haveSingleLeader(agents))
+
+		// Shut down one agent — pick deterministically by sorted address.
+		sortedAddrs := make([]string, 0, len(agents))
+		for addr := range agents {
+			sortedAddrs = append(sortedAddrs, addr)
+		}
+		sort.Strings(sortedAddrs)
+
+		deadAddr := sortedAddrs[0]
+		agents[deadAddr].Shutdown()
+		delete(agents, deadAddr)
+
+		// The two remaining agents have quorum (2/3 > 50%). Exactly one must
+		// be leader; two concurrent leaders would indicate split-brain.
 		Eventually(getLeaderStatusFunc(agents, httpClient), 10).Should(haveSingleLeader(agents))
 		Consistently(getLeaderStatusFunc(agents, httpClient), 3).Should(haveSingleLeader(agents))
 	})
