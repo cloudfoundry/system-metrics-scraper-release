@@ -6,7 +6,7 @@ require (
 	code.cloudfoundry.org/go-envstruct v1.7.0
 	code.cloudfoundry.org/go-loggregator/v9 v9.2.1
 	code.cloudfoundry.org/go-metric-registry v0.0.0-20260729193147-2eaf2ad59577
-	code.cloudfoundry.org/tlsconfig v0.63.0
+	code.cloudfoundry.org/tlsconfig v0.64.0
 	github.com/hashicorp/go-hclog v1.6.3
 	github.com/hashicorp/raft v1.7.3
 	github.com/nats-io/nats.go v1.52.0
@@ -35,7 +35,7 @@ require (
 	github.com/hashicorp/go-metrics v0.6.1 // indirect
 	github.com/hashicorp/go-msgpack/v2 v2.1.5 // indirect
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
-	github.com/klauspost/compress v1.19.1 // indirect
+	github.com/klauspost/compress v1.19.2 // indirect
 	github.com/mattn/go-colorable v0.1.15 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
@@ -53,6 +53,6 @@ require (
 	golang.org/x/sys v0.47.0 // indirect
 	golang.org/x/text v0.40.0 // indirect
 	golang.org/x/tools v0.48.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260729162451-8efbd57d26e0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260807164820-c8921c73eeea // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 )
