@@ -2,7 +2,7 @@
 name: leadership-election
 
 dependencies:
-- golang-1.26-linux
+- golang-1.27-linux
 
 files:
 - cmd/leadership-election/**/*.go
